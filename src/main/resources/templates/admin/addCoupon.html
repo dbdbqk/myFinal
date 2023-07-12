@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/admin/adminMain::headFrag('관리자')}"></head>
+
+<div th:replace="~{/admin/adminMain::topFrag}"></div>
+
+<div th:replace="~{/admin/adminMain::sideFrag}"></div> 
+ <!-- 제이쿼리 ui css -->
+ <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<!-- 제이쿼리 ui js -->
+ <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<meta charset="UTF-8">
+ <title>관리자: 쿠폰생성</title>
+  <style>
+  
+  .card-body {
+  height: 480px;
+  overflow-y: auto;
+} 
+  .coupon-List {
+      text-align: right;
+      
+  }
+    table {
+      border-collapse: collapse;
+      border-top: 1px solid #444444;
+      border-bottom: 1px solid #444444;
+      width: 100%;
+    }
+    th, td {
+      text-align: left;
+      padding: 2px;
+      border-bottom: 1px solid #444444;
+    }
+    th {
+      background-color: #CBFF75;
+    }
+    tr:not(:first-child):not(:last-child) {
+      border-top: none;
+      border-bottom: none;
+      background-color: transparent;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    div {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    tr:first-child th,
+    tr:first-child td {
+      /* Apply background color to the first row only */
+      background-color: #CBFF75;
+    }
+     .fa-tag {
+      margin-right: 10px;
+    }
+    .container-fluid {
+      margin: 0 auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      width: 500px;
+      height: 620px; 
+      
+    }
+    
+    .form-control {
+   align-items: center;
+    
+  width: 300px;
+}
+#couponSale {
+/*   width: 60px; */
+}
+
+#datepicker1 {
+/*    width: 90px;  */
+}
+#datepicker2 {
+/*    width: 90px;  */
+}
+
+.main-content {
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    width: 100%;
+    height: 420px; 
+    position: relative;
+}
+
+
+  </style>
+  <script>
+/*     function sortTable {
+      var selectBox = document.ElementById("role");
+      var selectedValue = selectBox.value.toLowerCase;
+
+      var table = document.ElementById("memberTable");
+      var rows = table.ElementsByTagName("tr");
+      var data = [];
+
+      for (var i = 1; i < rows.length - 1; i++) {
+        var cells = rows[i].ElementsByTagName("td");
+        var role = cells[1].innerText.toLowerCase;
+
+        if (selectedValue === "all" || role === selectedValue) {
+          data.push({
+            row: rows[i].outerHTML,
+            role: role
+          });
+        }
+      }
+
+      data.sort(function(a, b) {
+        return a.role.localeCompare(b.role);
+      });
+
+      var tbody = document.createElement("tbody");
+
+      for (var i = 0; i < data.length; i++) {
+        tbody.innerHTML += data[i].row;
+      }
+
+      table.replaceChild(tbody, table.ElementsByTagName("tbody")[0]);
+    }
+ */
+ $.datepicker.setDefaults({
+     
+	           dateFormat: 'yy-mm-dd' //달력 날짜 형태
+	           ,showOtherMonths: true //빈 공간에 현재월의 앞뒤월의 날짜를 표시
+	           ,showMonthAfterYear:true // 월- 년 순서가아닌 년도 - 월 순서
+	           ,changeYear: true //option값 년 선택 가능
+	           ,changeMonth: true //option값  월 선택 가능                
+	           ,buttonText: "선택" //버튼 호버 텍스트              
+	           ,yearSuffix: "년" //달력의 년도 부분 뒤 텍스트
+	           ,monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 텍스트
+	           ,monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 Tooltip
+	           ,dayNamesMin: ['일','월','화','수','목','금','토'] //달력의 요일 텍스트
+	           ,dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'] //달력의 요일 Tooltip
+	           ,minDate: "-5Y" //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전)
+	           ,maxDate: "+5y" //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후)  
+     
+ });
+
+
+	$("#clearBtn").click(function() {
+		formClear();
+	});
+	
+	// submit 등록
+	  function fnAddCoupon(){
+	    $('#AddCoupon').on('submit', function(event) {
+	    	var couponName = $('#couponName').val();
+	        var couponSale = $('#couponSale').val();
+	        var couponBeginAt = $('#datepicker1').val();
+	        var couponEndAt = $('#datepicker2').val();
+
+	        if (couponName === '') {
+	          alert('쿠폰명을 입력하세요.');
+	          event.preventDefault();
+	          return;
+	        } else if (discountRate === '') {
+	          alert('할인율을 입력하세요.');
+	          event.preventDefault();
+	          return;
+	        } else if (startDate === '') {
+	          alert('쿠폰 유효시작일을 입력하세요.');
+	          event.preventDefault();
+	          return;
+	        } else if (endDate === '') {
+	          alert('쿠폰 유효종료일을 입력하세요.');
+	          event.preventDefault();
+	          return;
+	        }
+
+	        // Proceed with coupon creation logic here
+	      });
+	    }
+	
+	// 호출
+	$(function() {
+		 //input을 datepicker로 선언      
+	    $("#datepicker1").datepicker();
+	    $("#datepicker2").datepicker();  
+	    $('input[name=couponBeginAt]').attr("readonly",true);
+	    $('input[name=couponEndAt]').attr("readonly",true);
+	    fnAddCoupon();
+	});
+
+</script>
+
+
+</head>
+<body>
+
+   <h1><i class="fa fa-tag"></i>쿠폰생성</h1>
+
+	<div class="container-fluid" id="container-wrapper">
+	  <div class="coupon-List">
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="h3 mb-0 text-gray-800">쿠폰등록</h1>
+		</div>
+	    <i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i>
+	    <a th:href="@{/admin/couponList.html}" class="coupon-List-link">쿠폰조회</a>
+	    <label for="couponList"></label>
+    </div>    
+
+
+		<!-- row -->
+    <div class="main-content">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+<!-- 					<div class="card-header"> -->
+<!-- 					</div> -->
+					<div class="card-body">
+						<form id="AddCoupon" method="post" th:action="@{/admin/addCoupon.do}">				
+							<div class="form-group">
+								<label for="couponNm">쿠폰명</label>
+								<input class="form-control mb-3" type="text" id="couponName" name="couponName" placeholder="쿠폰명" required="required">
+							</div>
+
+							<div class="form-group">
+								<label for="amount">할인율(%)</label>
+								<input class="form-control mb-3" type="text" id="couponSale" name="couponSale" placeholder="숫자입력" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');" required="required">
+							</div>
+
+							<div class="form-group">
+								<label for="startDate">쿠폰 유효시작일</label>
+								<input class="form-control mb-3" type="text" id="datepicker1" name="couponBeginAt"  placeholder="클릭 후 선택" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');" required="required" maxlength="8">
+							</div>
+
+							<div class="form-group">
+								<label for="endDate">쿠폰 유효종료일</label>
+								<input class="form-control mb-3" type="text" id="datepicker2" name="couponEndAt"  placeholder="클릭 후 선택" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');" required="required" maxlength="8" >
+							</div>
+							
+							<input type="hidden" id="couponId" name="id" value="0">
+						<div class="text-right">
+							<button class="btn btn-success mb-1" >생성</button>
+							<button type="reset" id="clearBtn" class="btn btn-primary mb-1">취소</button>
+						</div>						
+						</form>
+					</div>
+				</div>
+			</div>
+			</div>
+		</div>
+	</div>
+
+  <div th:replace="~{/admin/adminMain::footerFrag}"></div>
+</body>
+</html>

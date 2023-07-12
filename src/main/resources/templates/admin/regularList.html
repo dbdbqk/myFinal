@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/admin/adminMain::headFrag('관리자')}"></head>
+
+<div th:replace="~{/admin/adminMain::topFrag}"></div>
+
+<div th:replace="~{/admin/adminMain::sideFrag}"></div>
+<meta charset="UTF-8">
+<title>관리자: 상품조회</title>
+<style>
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // 정렬
+    $(function(){ 
+        $("th").click(function() {    
+        let table = $(this).parents("table").eq(0);  
+        let tbody = table.find("tbody");
+        let rows = tbody.find("tr:not(:last-child)").toArray().sort(comparator($(this).index()));
+//        let rows = tbody.find("tr").toArray().sort(comparator($(this).index()));
+
+            this.asc = !this.asc;
+            if (!this.asc) {
+              rows = rows.reverse();
+            }
+            for (let i = 0; i < rows.length; i++) {
+              table.append(rows[i]);
+            }
+          });
+
+        function comparator(index) {
+          return function(a, b) {
+            let aValue = getCellValue(a, index);
+            let bValue = getCellValue(b, index);
+            if (index === 1 ||index === 4 ||index === 5) {
+              aValue = parseInt(aValue);
+              bValue = parseInt(bValue);
+            }
+            if (aValue < bValue) return -1;
+            if (aValue > bValue) return 1;
+            return 0;
+          };
+        }
+       
+        function getCellValue(row, index) {
+          return $(row).children("td").eq(index).text();
+        }
+        
+      // recordPerPage의 변경
+//       $('#recordPerPage').on('change', function(){
+//         location.href = '/employees/change/record?recordPerPage=' + $(this).val();
+//       });
+    });
+
+    // 메인페이지로가기 이벤트
+    function showText() {
+      document.getElementById("hoverText").style.display = "inline";
+    }
+
+    function hideText() {
+      document.getElementById("hoverText").style.display = "none";
+    }
+
+    // 체크박스 전체 선택/해제
+    function toggleAllCheckboxes() {
+      var checkboxes = document.querySelectorAll('input[name="productIds"]');
+      var selectAllCheckbox = document.getElementById('selectAllCheckbox');
+
+      for (var i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].checked = selectAllCheckbox.checked;
+      }
+    }
+   
+    function findCategoryName(categoryId, categories) {
+      for (var i = 0; i < categories.length; i++) {
+        if (categories[i].regularCategoryId === categoryId) {
+          return categories[i].regularCategoryName;
+        }
+      }
+      return 'Unknown Category';
+    }
+
+    // 상품 삭제
+    function regularDelete(button) {
+      event.preventDefault(); // 기본 동작 중지(삭제 후 원래페이지로)
+    var regularDelete = confirm("정말로 삭제하시겠습니까?");
+    if (regularDelete) {
+      // 삭제 작업 수행
+      var row = button.parentNode.parentNode;
+      var regularNo = row.querySelector("td:nth-child(2)").innerText; //상품번호
+      
+       
+          $.ajax({
+              type: 'post',
+              url: '/admin/delProduct.do',
+              data: {
+                regularNo: regularNo
+              },
+              dataType: 'json',
+              success: function(resData) {
+                if(resData.delYn == 1) {
+                  alert(regularNo+"번 상품이 삭제되었습니다.");
+                  location.reload(); 
+                } else {
+                  alert(regularNo+"번 상품 삭제에 실패하였습니다.");
+                }
+              }
+            });
+    }
+  }
+    var initialUrl = window.location.href;
+
+   // popstate 이벤트 핸들러
+   window.onpopstate = function(event) {
+     if (window.location.href === initialUrl) {
+       // 초기 URL인 경우, 기존 페이지를 로드하거나 필요한 동작 수행
+       // 예: $.ajax()를 사용하여 이전 페이지의 내용을 로드
+       // 이전 페이지의 URL이 서버에서 처리되어야 함에 유의하세요.
+       $.ajax({
+         type: 'get',
+         url: '/admin/regularList.html',
+         success: function(resData) {
+           $("body").html(resData);
+         }
+       });
+     } else {
+        // 초기 URL이 아닌 경우, 새로운 페이지를 로드
+        $.ajax({
+          type: 'get',
+          url: window.location.href,
+          success: function(resData) {
+            $("body").html(resData);
+          }
+        });
+      }
+   };
+   
+    // 상품 수정
+    function regularEdit(button) {
+      event.preventDefault(); // 기본 동작 중지(삭제 후 원래페이지로)
+    var regularEdit = confirm("수정페이지로 이동됩니다.");
+    if (regularEdit) {
+      var row = button.parentNode.parentNode;
+      var regularNo = row.querySelector("td:nth-child(2)").innerText; //상품번호
+      
+       
+          $.ajax({
+              type: 'post',
+              url: '/admin/regularEditPage.do',
+              data: {
+                regularNo: regularNo
+              },
+              dataType: 'html',
+              success: function(resData) {
+                  $("body").html(resData);
+                  var newUrl = '/admin/regularEdit.html'; // 새로운 URL 설정
+                  history.pushState(null, null, newUrl);
+              }
+            });
+    }
+  }
+    // 상품 수정
+    // 상품등록 페이지로 이동, 화면에서 수정 후 수정
+/*  function editProduct() {
+    window.location.href = "/admin/regularAddPage.html";
+  } */
+
+  </script>
+</head>
+<body>
+
+	<h3>
+		<a class="home" th:href="@{/admin/adminMain.html}"
+			onmouseover="showText()" onmouseout="hideText()"> <i
+			class="fa-solid fa-house"></i> <span id="hoverText"
+			style="display: none;">메인페이지로 가기</span>
+		</a>
+	</h3>
+
+	<h1>
+		<i class="fa-solid fa-user"></i>상품관리
+	</h1>
+
+	<div class="main-content">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h4>상품조회</h4>
+						<div class="card-header-form"></div>
+					</div>
+					<div class="card-body p-0">
+						<div class="table-responsive">
+							<form id="regularForm">
+								<table class="table table-striped">
+									<!--    <div class="card-body">
+    <table id="regularTable"> -->
+									<thead>
+										<tr>
+											<th><input type="checkbox" id="selectAllCheckbox"
+												onchange="toggleAllCheckboxes()"></th>
+											<th>상품번호</th>
+											<th>카테고리</th>
+											<th>상품명</th>
+											<th>판매가</th>
+											<th>원가</th>
+											<th>진열여부</th>
+											<th>상태</th>
+											<th>비고</th>
+											<th>수정</th>
+											<th>삭제</th>
+										</tr>
+									</thead>
+									<tbody>
+										<!-- 여기에 회원 데이터를 동적으로 추가할 예정입니다 -->
+										<tr th:each="regularProduct, vs: ${regularProduct}">
+											<td><input type="checkbox" name="productIds"
+												th:value="${regularProduct.regularNo}"></td>
+											<td th:text="${regularProduct.regularNo}"></td>
+											<td th:text="${regCategory[vs.index].regularCategoryName}"></td>
+											<td th:text="${regularProduct.regularName}"></td>
+											<td th:text="${regularProduct.regularSellPrice}"></td>
+											<td th:text="${regularProduct.regularOriginPrice}"></td>
+											<td
+												th:text="${regularProduct.regularDisplay == 1 ? '여' : (regularProduct.regularDisplay == 2 ? '부' : '')}"></td>
+											<td
+												th:text="${regularProduct.regularState == 1 ? '신상' : (regularProduct.regularState == 2 ? '베스트' : (regularProduct.regularState == 3 ? '노말' : ''))}"></td>
+											<td th:text="${regularProduct.regularSimpleDetail}"></td>
+											<td><button type="button" onclick="regularEdit(this)">수정</button></td>
+											<td><button type="button" onclick="regularDelete(this)">삭제</button></td>
+										</tr>
+									</tbody>
+
+									<tr>
+										<td th:utext="${pagination}"></td>
+									</tr>
+								</table>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div th:replace="~{/admin/adminMain::footerFrag}"></div>
+</body>
+</html>

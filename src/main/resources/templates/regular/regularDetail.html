@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+
+
+<!--/* /layout/header.html의 headFrag조각으로 head 태그를 바꾼다. */-->
+<head th:replace="~{/layout/header::headFrag('구독상세보기')}"></head>
+<style>
+  #product > .view > article {
+      width: 100%;
+      height: auto;
+      overflow: hidden;
+  }        
+
+  #product > .view > .info > div {
+      float: left;
+      width: 50%;
+      height: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+  }
+
+  #product > .view > .info > .image > img { width: 100%; }
+
+  #product > .view > .info > .summary > nav {
+      border-bottom: 1px solid #eaeaea;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+      overflow: hidden;
+  }
+
+  #product > .view > .info > .summary > nav > h1 {
+      float: left;
+      color: #0231a6;
+      font-weight: bold;
+      font-size: 1.5em;
+  }
+
+  #product > .view > .info > .summary > nav > h2 {
+      float: right;
+      color: #777;
+      margin-top: 8px;
+  }
+
+  #product > .view > .info > .summary > nav > h3 {
+      font-size: 18px;
+      font-weight: bold;
+      color: #1e2732;
+  }
+
+  #product > .view > .info > .summary > nav > p {
+      font-size: 14px;
+      color: #474747;
+      line-height: 36px;
+      letter-spacing: -1px;
+  }
+
+  #product > .view > .info > .summary > nav:nth-child(2) > .rating > a {
+      color: #346aff;
+      text-decoration: underline;
+  }
+
+  #product > .view > .info > .summary .org_price > del {
+      font-size: 18px;
+      color: #aaa;
+  }
+
+  #product > .view > .info > .summary .org_price > del::after { content: "원"; }
+
+  #product > .view > .info > .summary .org_price > span {
+      color: #eb000a;
+      font-size: 16px;
+      margin-left: 6px;
+  }
+
+  #product > .view > .info > .summary .org_price > span::after { content: "↓"; }
+
+  #product > .view > .info > .summary .dis_price > ins {
+      font-size: 26px;
+      font-weight: bold;
+      text-decoration: none;
+  }
+
+  #product > .view > .info > .summary .dis_price > ins::after { content: "원"; }
+  #product > .view > .info > .summary .delivery {
+      font-size: 16px;
+      color: #2e8de5;
+  }
+
+  #product > .view > .info > .summary .origin {
+      font-size: 16px;
+  }
+
+  #product > .view > .info > .summary .arrival {
+      font-size: 14px;
+      margin-left: 10px;
+  }
+  #product > .view > .info > .summary .desc {
+      display: block;
+      color: #aaa;
+  }
+
+  #product > .view > .info > .summary .card > i {
+      display: inline-block;
+      width: 30px;
+      height: 18px;
+      top: 4px;
+      font-size: 0;
+      vertical-align: text-top;
+      margin-right: 2px;
+  }
+
+  #product > .view > .info > .summary .cardfree > i { background-position: -126px 0; }
+
+  #product > .view > .info > .summary .cardadd > i { background-position: -51px -21px; }
+
+  #product > .view > .info > .summary .banner { width: 100%; }
+
+  #product > .view > .info > .summary .count {
+      position: relative;
+      width: 100px;
+      height: 40px;
+  }
+
+  #product > .view > .info > .summary .count > button {
+      position: absolute;
+      width: 21px;
+      height: 21px;
+      background-image: url(./img/ico_sprites.png);
+      font-size: 0;
+      background-color: transparent;
+      border: none;
+  }
+
+  #product > .view > .info > .summary .count > input[name=num] {
+      position: absolute;
+      left: 30px;
+      top: 0;
+      width: 30px;
+      height: 21px;
+      border: 1px solid #ececec;
+      font-size: 14px;
+      text-align: center;
+  }
+
+  #product > .view > .info > .summary .count > .decrease {
+      left: 0;
+      top: 0;
+      background-position: 0px -74px;
+  }
+
+  #product > .view > .info > .summary .count > .increase {
+      left: 70px;
+      top: 0;
+      background-position: -48px -74px;
+  }
+
+
+  #product > .view > .info > .summary .total {
+      overflow: hidden;
+      margin-top: 16px;
+  }
+
+  #product > .view > .info > .summary .total > span {
+      float: right;
+      display: inline-block;
+      line-height: 38px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #000;
+      text-align: right;
+      letter-spacing: -0.5px;
+  }
+
+  #product > .view > .info > .summary .total > span::after { content: "원";}
+
+  #product > .view > .info > .summary .total > em {
+      float: right;
+      display: block;
+      width: 100px;
+      height: 22px;
+      padding: 10px 0 0;
+      font-size: 16px;
+      line-height: 22px;
+      color: #5e636d;
+      letter-spacing: -1px;
+  }
+
+  #product > .view > .info > .summary .button {
+      overflow: hidden;
+      margin-top: 16px;
+  }
+
+  #product > .view > .info > .summary .button > input {
+      float: left;
+      width: 49%;
+      height: 50px;
+      margin: 2px;
+      font-size: 20px;
+      font-weight: bold;
+      border-radius: 2px;
+      cursor: pointer;
+  }
+
+  #product > .view > .info > .summary .button > .cart {
+      background: #fff;
+      border: 1px solid #d9d9d9;
+      color: #233594;
+  }
+
+  #product > .view > .info > .summary .button > .order {
+      background: #2e8de5;
+      border: 1px solid #217fd7;
+      color: #fff;
+  }
+
+  #product > .view > .review > .paging > .num > a.on {
+      color: #fe434c;
+      font-weight: bold;
+  }
+
+  #product > .view > article > nav {
+      border-bottom: 1px solid #a4a9b0;
+      padding: 6px 0;
+      margin-bottom: 12px;
+      overflow: hidden;
+  }
+
+  #product > .view > article > nav > p {
+      float: left;
+      color: #777;
+      margin-top: 6px;
+      margin-left: 6px;
+  }
+
+  #product > .view > article > nav > h1 {
+      float: left;
+      color: #1e2732;
+      font-weight: bold;
+      font-size: 1.5em;
+  }
+
+  #product > .view > .notice > table { width: 100%; }
+
+  #product > .view > .notice > table:nth-of-type(2) { border-top: 1px solid #ececec; }
+
+  #product > .view > .notice > table tr > td {
+       padding: 5px 0 6px 21px;
+       font-size: 14px;
+       color: #777;
+  }
+
+  #product > .view > .notice > table tr > td:nth-child(1) { width: 20%; color: #222; }
+
+  #product > .view > .review > .paging {
+      width: 100%;
+      padding: 30px 0;
+      text-align: center;
+  }
+
+  #product > .view > .notice > .notice {
+      margin: 20px 0;
+      padding: 21px 26px 20px 19px;
+      line-height: 20px;
+      font-size: 14px;
+      color: #757c8a;
+      background: #fafafa;
+      border-radius: 2px;
+      white-space: normal;
+  }
+
+  #product > .view > .review >.paging > span > a { 
+      color: #777;
+      font-size: 11px;
+      letter-spacing: -1px;
+  }
+
+  #product > .view > .review > .paging > .num > a {
+      display: inline-block;
+      min-width: 14px;
+      margin: 0 2px;
+      padding: 8px 9px;
+      border: 1px solid #c4c4c4;
+      color: #000;
+      font-size: 12px;
+      text-align: center;
+      text-decoration: none;
+  }
+  #product > .view > .review > .paging > .num > a.on {
+      color: #fe434c;
+      font-weight: bold;
+  }
+  
+  .star fieldset{
+    display: inline-block;
+    direction: rtl;
+    border:0;
+}
+.star fieldset legend{
+    text-align: right;
+}
+.star input[type=radio]{
+    display: none;
+}
+.star label{
+    font-size: 3em;
+    color: transparent;
+    text-shadow: 0 0 0 #f0f0f0;
+}
+.star label:hover{
+    text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
+}
+.star label:hover ~ label{
+    text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
+}
+.star input[type=radio]:checked ~ label{
+    text-shadow: 0 0 0 rgba(250, 208, 0, 0.99);
+}
+
+  
+ .review > ul {
+      padding: 10px;
+      box-sizing: border-box;
+  }
+
+  .review > ul > li {
+      padding-top: 16px;
+      border-bottom: 1px solid #ececec;
+      box-sizing: border-box;
+      list-style-type: none; /* 추가 */
+  }
+  
+  .review > ul > li > div {
+      overflow: hidden;
+      list-style-type: none; /* 추가 */
+  }
+
+
+
+ .review > ul > li > div > span {
+      float: right;
+      color: #555;
+  }
+
+ .review > ul > li > div >  h5 { float: left; }
+
+  
+ .review > ul > li > h3 {
+      color: #555;
+      margin-top: 6px;
+  }
+
+ .review > ul > li > p {
+      width: 100%;
+      height: 60px;
+      color: #555;
+      font-size: 14px;
+      line-height: 19px;
+      word-break: break-all;
+      word-wrap: break-word;
+      margin-top: 10px;
+  }
+   .sidebar {
+    position: fixed;
+    top: 200px;
+    left: 0;
+    width: 15%; /* 사이드바 너비를 조절하려면 이 값을 변경하세요 */
+    height: 100%;
+    overflow-y: auto; /* 사이드바가 길어질 경우 스크롤 표시 */
+    z-index: 1000; /* 다른 요소 위에 나타나도록 z-index 설정 */
+  } 
+        
+</style>
+
+<body>
+</head>
+<body>
+
+  <div th:replace="~{/layout/header::gnbFrag}"></div>
+    <div class="sidebar">
+    <!-- 이 곳에 카테고리 사이드바를 배치합니다. -->
+      <div class="list-group">
+        <a th:href="@{/regular/regularList.do}" class="list-group-item list-group-item-action">전체보기</a>
+        <a th:href="@{/regular/regularList.do(regularState=1)}" class="list-group-item list-group-item-action">New</a>
+        <a th:href="@{/regular/regularList.do(regularState=2)}"  class="list-group-item list-group-item-action">Best</a>
+        <div style="text-align: center">카테고리</div>
+          <th:block th:each="category, vs:${category}">
+            <a th:id="|category${vs.index  + 1}|"th:href="@{/regular/regularList.do(regularCategory=${category.regularCategory})}" class="list-group-item list-group-item-action" th:text="${category.regularCategoryName}"></a>
+          </th:block>
+        </div>
+      </div>
+       <section class="ftco-section ftco-cart">
+          <div class="container">
+            <main id="product">
+                <section class="view">
+                    <article class="info">
+                        <div class="image">
+                             <img th:src="@{/regular/regularMainDisplay.do(regularNo=${regularDetail.regularNo})}">
+                        </div>
+                        <div class="summary">
+                            <nav>
+                                <h3 th:text="${regularDetail.regularName}"></h3>
+                                <p th:text="${regularDetail.regularSimpleDetail}"></p>
+                                <h5 th:if="${regAvgStar == 0}">리뷰 없음</h5>
+                                <h5 th:if="${regAvgStar != 0}" th:text="|평점: ${regAvgStar}|"></h5>
+                            </nav>
+                            <nav>
+                                <div class="dis_price">
+                                    <ins th:text="${#numbers.formatInteger(regularDetail.regularSellPrice, 3, 'COMMA') }"></ins>
+                                </div>
+                            </nav>
+                            <nav>
+                                <span class="delivery">무료배송</span>
+                                <span class="arrival">매주 월/수/금 또는 화/목/토</span>
+
+                                <span class="desc">본 상품은 국내배송만 가능합니다.</span>
+                            </nav>
+                            <nav>
+                                <span class="origin">원산지-상세설명 참조</span>
+                            </nav>
+                          <form method="post" th:action="@{/regular/regularPayPage.do}">
+                            <div th:text="${regularDetail.regularName}"></div>
+                              <input type="hidden" name="regularNo" th:value="${regularDetail.regularNo}" >
+                              <input type="hidden" name="regularSellPrice" th:value="${regularDetail.regularSellPrice}" readOnly>
+                              <input type="hidden" name="loginId" th:value="${session.loginId}">
+                              <div>
+                                <label for="1"><input id="1" name="regDeliveryDay" type="radio" value="월수금" checked>월/수/금</label>
+                                <label for="2"><input id="2" name="regDeliveryDay" type="radio" value="화목토">화/목/토</label>
+                              </div>
+                              <input type="button" onclick="fnDown()" value="-">
+                              <input type="text" name="regCount" id="regCount" value="1" readOnly style="border: none; background-color: transparent; outline: none; box-shadow: none; width: 15px;  text-align: center; ">
+                              <input type="button" onclick="fnUp()" value="+">
+                              <input type="text" name="totalPrice" id="totalPrice" th:value="${#numbers.formatInteger(regularDetail.regularSellPrice, 3, 'COMMA')}" style="border: none; background-color: transparent; outline: none; box-shadow: none; width: 100px;  text-align: center; ">
+                              <div class="button">
+
+                              <input type="submit" class="order" value="정기결제">
+                            </div>
+                          </form>
+                        </div>
+                    </article>
+                    <article class="detail">
+                        <nav><h1>상품정보</h1></nav>
+                        <div class="d-flex justify-content-center">
+                         <img th:src="@{/regular/regularDetailDisplay.do(regularNo=${regularDetail.regularNo})}">
+                        </div>
+                    </article>
+                </section>
+            </main>
+      <hr>            
+      <div th:replace="~{/regular/regularReview::reviewFrag(regReviewList=${regReviewList}, pagination=${pagination}, regularDetail=${regularDetail})}"></div>
+    </div>
+       </section>
+   <div th:replace="~{/layout/footer::gnbFooter}"></div> 
+ </body>
+ <script>
+ function fnDown() {
+	  var currentValue = parseInt($('#regCount').val());
+	  if (currentValue > 1) {
+	    $('#regCount').val(currentValue - 1);
+	    updateTotalPrice(currentValue - 1);
+	  } else {
+	    alert('최소 구독 인원은 1명 입니다.');
+	  }
+	}
+
+	function fnUp() {
+	  var currentValue = parseInt($('#regCount').val());
+	  if (currentValue < 9) {
+	    $('#regCount').val(currentValue + 1);
+	    updateTotalPrice(currentValue + 1);
+	  } else {
+	    alert('최대 구독 인원은 9명 입니다.');
+	  }
+	}
+
+	function updateTotalPrice(count) {
+	  // 가격을 계산하고 업데이트하는 로직을 구현합니다.
+	  // 예시로 가격은 count에 따라 단순히 100을 곱한 값으로 계산되도록 하였습니다.
+	  var regPrice = '[[${regularDetail.regularSellPrice}]]'
+	  var price = count * regPrice;
+	  var price2 = price.toLocaleString()
+	  $('#totalPrice').val(price2);
+	}
+ 
+	
+	
+ </script>
+
+
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<style>
+  .sidebar {
+    position: fixed;
+    top: 200px;
+    left: 0;
+    width: 15%; /* 사이드바 너비를 조절하려면 이 값을 변경하세요 */
+    height: 100%;
+    overflow-y: auto; /* 사이드바가 길어질 경우 스크롤 표시 */
+    z-index: 1000; /* 다른 요소 위에 나타나도록 z-index 설정 */
+  }
+</style>
+    
+
+<head th:replace="~{/layout/header::headFrag('구독리스트')}"></head>
+<div th:replace="~{/layout/header::gnbFrag}"></div>
+<body>
+  <form id="frm1" th:action="@{/regular/regularList.do}">
+    <div class="d-flex justify-content-end mr-5">
+      <input type="text" name="query" id="query" placeholder="구독명검색">
+      <button>조회</button>
+    </div>
+  </form>
+  <section class="ftco-section">
+  <div class="sidebar">
+  <!-- 이 곳에 카테고리 사이드바를 배치합니다. -->
+    <div class="list-group">
+      <a th:href="@{/regular/regularList.do}" class="list-group-item list-group-item-action">전체보기</a>
+      <a th:href="@{/regular/regularList.do(regularState=1)}" class="list-group-item list-group-item-action">New</a>
+      <a th:href="@{/regular/regularList.do(regularState=2)}"  class="list-group-item list-group-item-action">Best</a>
+      <div style="text-align: center">카테고리</div>
+        <th:block th:each="category, vs:${category}">
+          <a th:id="|category${vs.index  + 1}|"th:href="@{/regular/regularList.do(regularCategory=${category.regularCategory})}" class="list-group-item list-group-item-action" th:text="${category.regularCategoryName}"></a>
+        </th:block>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 col-lg-3 ftco-animate fadeInUp ftco-animated"  th:each="regularList, vs: ${regularList}">
+          <div class="product">
+            <div th:each="regularMainImgList : ${regularMainImgList}" th:if="${regularList.regularNo == regularMainImgList.regularNo}" >
+            <a th:href="@{/regular/regularDetail.do(regularNo=${regularList.regularNo})}" class="img-prod"><img id="imgSize" class="img-fluid" th:src="@{/regular/regularMainDisplay.do(regularNo=${regularMainImgList.regularNo})}"  alt="Colorlib Template"></a>
+            </div>
+            <input type="hidden" name="regularNo" th:value="${regularList.regularNo}">
+            <div class="avg-star" th:id="|avg-star-${regularList.regularNo}|" style="text-align: center">리뷰없음</div>
+            <div class="overlay"></div>
+            <div class="text py-3 pb-4 px-3 text-center">
+              <h3><a th:href="@{/regular/regularDetail.do(regularNo=${regularList.regularNo})}" th:text="${regularList.regularName}"></a></h3>
+              <div class="d-flex">
+                <div class="text py-3 pb-4 px-3 text-center">
+                  <p class="price"><span class="mr-2 price" th:text="${#numbers.formatInteger(regularList.regularSellPrice, 3, 'COMMA') + '원'}"></span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div th:utext="${pagination}" class="d-flex justify-content-center"></div>
+  </section>
+  <div th:replace="~{/layout/footer::gnbFooter}"></div>  
+</body>
+
+<script>
+$(document).ready(function() {
+    $('.product').each(function() {
+      var regularNo = $(this).find('input[name="regularNo"]').val();
+      fnAvgStar(regularNo, $(this));
+    });
+  });
+  function fnAvgStar(regularNo) {
+       $.ajax({
+             url: '/regular/regAvgStar.do',  
+             type: 'post',
+             data: {
+                 'regularNo': regularNo
+             },
+             dataType: 'json',
+             success: function(resData){
+               if(resData.regAvgStar != 0){
+                $('#avg-star-' + regularNo).text('평점: ' + resData.regAvgStar  + '/5');
+               }
+             }
+       })
+    }
+  
+</script>
+
+</html>

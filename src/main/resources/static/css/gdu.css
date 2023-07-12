@@ -1,0 +1,293 @@
+@charset "UTF-8";
+.pl-37 {
+  padding-left: 37rem !important
+}
+.pt-7 {
+  padding-top: 7rem !important
+}
+.pt-1 {
+  padding-top: 1rem !important
+}
+.pt-all {
+  padding-left: 5rem !important;
+  padding-right: 5rem !important;
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+  text-align: center;
+  font-size: 20px;
+}
+
+.pl-7 {
+ padding-left: 7rem !important
+}
+.pl-3 {
+ padding-left: 3rem !important
+}
+.pr-3 {
+ padding-right: 3rem !important
+}
+
+.pl-9 {
+ padding-left: 9rem !important
+}
+
+.pl-12 {
+ padding-left: 12rem !important
+}
+
+.ml-10 {
+ margin-left: 10rem !important
+}
+.pl-13 {
+ padding-left: 13rem !important
+}
+#title {
+ text-decoration-line: none
+}
+
+
+
+
+.blind {
+    display: none;
+  }
+ 
+.aa {
+color: black;
+}
+  
+.cartt:hover {
+  color: #006800;
+}
+
+.salad {
+   color: #82ae46;
+  
+}
+
+.customer:hover {
+  
+  color: #82ae46;
+}
+
+.pagination {
+    width: 350px;
+    margin: 0 auto;
+    text-align: center;
+    
+  }
+
+  .pagination span, .pagination a {
+    display: inline-block;
+    padding: 5px 5px ;
+    border:1px solid #dcdcdc;
+    box-sizing: border-box;
+    height:40px;
+    width:40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border:1px solid #dcdcdc;
+    box-sizing: border-box;
+    transition: 0.2s;
+  }
+  
+  .pagination span, .pagination a:hover{
+    border:3px solid #82ae46;
+    color:#82ae46;
+    font-weight: 700;
+    cursor: pointer;
+}
+  .pagination span, .pagination a:checked{
+
+    border:3px solid #82ae46;
+    color:#ffffff;
+    font-weight: 700;
+    cursor: pointer;
+    background-color:  #82ae46;
+  
+}
+  
+  .hidden {
+    visibility: hidden;
+  }
+
+  
+  
+  .radioButtonStyle{
+    display: flex;
+    flex-direction: row;
+    
+}
+
+.radioStyle{
+    font-size: 16px;
+    
+}
+
+.radioStyle [type="radio"]{
+    display: none;
+    
+}
+
+.radioStyle span{
+    text-align: center;
+    height:50px;
+    width:130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border:1px solid #dcdcdc;
+    box-sizing: border-box;
+    transition: 0.2s;
+   
+}
+
+.radioStyle [type="radio"]:hover  + span{
+    border:3px solid #82ae46;
+    color:#82ae46;
+    font-weight: 700;
+    cursor: pointer;
+}
+ 
+.radioStyle [type="radio"]:checked  + span{
+
+    border:3px solid #82ae46;
+    color:#ffffff;
+    font-weight: 700;
+    cursor: pointer;
+    background-color: #82ae46;
+  
+}
+  
+  
+*{
+  box-sizing: border-box; 
+}
+  
+.que:first-child{
+    border-top: 2px solid #82ae46;
+  }
+  
+.que{
+  position: relative;
+  padding: 17px 0;
+  cursor: pointer;
+  font-size: 14px;
+  border-bottom: 1px solid #dddddd;
+  
+}
+  
+.que::before{
+  display: inline-block;
+  content: 'Q';
+  font-size: 14px;
+  color: #006633;
+  margin: 0 5px;
+}
+
+.que.on>span{
+  font-weight: bold;
+  color: #82ae46;
+  transition: 0.1s;
+}
+  
+.anw {
+  display: none;
+  overflow: hidden;
+  font-size: 14px;
+  background-color: #f4f4f2;
+  padding: 27px 0;
+}
+  
+.anw::before {
+  display: inline-block;
+  content: 'A';
+  font-size: 14px;
+  font-weight: bold;
+  color: #666;
+  margin: 0 5px;
+}
+
+.arrow-wrap {
+  position: absolute;
+  top:50%; right: 10px;
+  transform: translate(0, -50%);
+}
+
+.que .arrow-top {
+  display: none;
+}
+.que .arrow-bottom {
+  display: block;
+}
+.que.on .arrow-bottom {
+  display: none;
+  
+}
+.que.on .arrow-top {
+  display: block; 
+}
+
+.qnaButton {
+    margin-left: 20px;
+    border:3px solid #82ae46;
+    color:#82ae46;
+    font-weight: 700;
+    cursor: pointer;
+    background-color: #ffffff;
+    
+    width:100px;
+
+}
+
+.qnaButton:hover {
+
+    color:#ffffff;
+    font-weight: 700;
+    cursor: pointer;
+    background-color: #82ae46;
+    transition: 0.2s;
+  
+}
+
+
+.qnaButton:checked {
+
+    color:#ffffff;
+    font-weight: 700;
+    cursor: pointer;
+    background-color: #82ae46;
+    transition: 0.2s;
+  
+}
+
+
+.loginButton {
+    margin-bottom: 1.5rem;
+    margin-top: 1rem;
+    border:3px solid #82ae46;
+    color:#82ae46;
+    font-weight: 700;
+    cursor: pointer;
+    background-color: #ffffff;
+    width:200px;
+    height: 50px;
+    font-size: 20px;
+
+}
+
+.loginButton:hover {
+
+    color:#ffffff;
+    font-weight: 700;
+    cursor: pointer;
+    background-color: #82ae46;
+    transition: 0.2s;
+  
+}
+.check {
+  
+ accent-color:  gray;
+  
+}  

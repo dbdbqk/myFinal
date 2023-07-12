@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<style>
+  #product>.order>form>table {
+    width: 100%;
+    border-top: 2px solid #000;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+  
+  #product>.order>form>table tr {
+    border-bottom: 1px solid #d3d3d3;
+  }
+  
+  #product>.order>form>table th {
+    padding: 12px 0;
+    background: #fff;
+    color: #383838;
+    font-size: 0.95em;
+    text-align: center;
+    letter-spacing: -0.1em;
+  }
+  
+  #product>.order>form>table .empty {
+    display: none;
+  }
+  
+  #product>.order>form>table td {
+    text-align: center;
+  }
+  
+  #product>.order>form>table td:last-child {
+    color: #ff006c;
+    font-weight: bold;
+  }
+  
+  #product>.order>form>table td>article {
+    padding: 6px;
+    overflow: hidden;
+  }
+  
+  #product>.order>form>table td>article>a {
+    display: inline-block;
+  }
+  
+  #product>.order>form>table td>article>a>img {
+    width: 80px;
+  }
+  
+  #product>.order>form>table td>article>div {
+    float: left;
+    margin-left: 10px;
+  }
+  
+  #product>.order>form>table td>article>div>h2 {
+    text-align: left;
+  }
+  
+  #product>.order>form>table td>article>div>p {
+    text-align: left;
+    color: #777;
+    margin-top: 4px;
+  }
+  
+  #product>.order>form>article {
+    width: 560px;
+    height: auto;
+    margin-top: 16px;
+  }
+  
+  #product>.order>form>.final {
+    float: right;
+    width: 360px;
+    height: 412px;
+    padding: 20px;
+    margin-top: 12px;
+    background: #fff;
+    border: 1px solid #d3d3d3;
+    box-sizing: border-box;
+  }
+  
+  #product>.order>form>.final>h2 {
+    width: 100%;
+    font-weight: bold;
+    font-size: 16px;
+    border-bottom: 1px solid #111;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    box-sizing: border-box;
+    color: #1e1e1e;
+  }
+  
+  #product>.order>form>.final>table {
+    width: 100%;
+  }
+  
+  #product>.order>form>.final>table tr:nth-last-child(1) td {
+    font-size: 20px;
+  }
+  
+  #product>.order>form>.final>table tr:nth-last-child(1) td:last-child {
+    color: #ff006c;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  #product>.order>form>.final>table td {
+    padding: 10px 0;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  #product>.order>form>.final>table td:last-child {
+    text-align: right;
+  }
+  
+  #product>.order>form>.final>input[type=button] {
+    width: 100%;
+    height: 56px;
+    font-size: 26px;
+    border-width: 1px;
+    border-color: #d81818;
+    border-bottom-color:#82ae46;
+    background: #82ae46;
+    background-image: -webkit-linear-gradient( #82ae46,  #82ae46);
+    color: #fff;
+    box-sizing: border-box;
+    margin-top: 10px;
+  }
+  
+  #product>.order>form>article>h1 {
+    font-weight: bold;
+    font-size: 14px;
+    padding: 6px 0;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #111;
+  }
+  
+  #product>.order>form>article>div {
+    padding: 6px;
+    box-sizing: border-box;
+  }
+  
+  #product>.order>form>.delivery>table {
+    margin-top: 10px;
+  }
+  
+  #product>.order>form>.delivery>table tr>td:nth-child(1) {
+    padding: 6px;
+  }
+  
+  #product>.order>form>.delivery>table input[type=button] {
+    padding: 4px 6px;
+    border: 1px solid #ccc;
+    background-color: #f0f4f9;
+    border-color: #acc0e0;
+    color: #3371c9;
+    outline: none;
+  }
+  
+  #product>.order>form input {
+    color: #555;
+    padding: 2px 0;
+    border: 1px solid #999;
+    box-sizing: border-box;
+  }
+  
+  #product>.order>form>.delivery>table input[name=addr1] {
+    width: 400px;
+  }
+  
+  #product>.order>form>.delivery>table input[name=addr2] {
+    width: 400px;
+  }
+  
+  #product>.order>form>.discount>div {
+    overflow: hidden;
+  }
+  
+  #product>.order>form>.discount>div>p {
+    float: left;
+  }
+  
+  #product>.order>form>.discount>div>label {
+    float: right;
+  }
+  
+  #product>.order>form>.discount>div>label>input[type=text] {
+    display: inline-block;
+    outline: none;
+  }
+  
+  #product>.order>form>.discount>div>span {
+    display: block;
+    margin-top: 20px;
+    color: #888;
+  }
+  
+  #product>.order>form>.discount>div>label>input[type=button] {
+    padding: 4px 6px;
+    border: 1px solid #ccc;
+    background-color: #f0f4f9;
+    border-color: #acc0e0;
+    color: #3371c9;
+    outline: none;
+  }
+  
+  #product>.order>form>.payment>div {
+    margin-bottom: 10px;
+  }
+  
+  #product>.order>form>.payment>div>span {
+    display: inline-block;
+    color: #3a85c8;
+    margin: 6px 0;
+  }
+  
+  #product>.order>form>.payment>div label {
+    margin-right: 16px;
+  }
+  
+  #product>.order>form>.payment>div input {
+    vertical-align: bottom;
+    margin-right: 4px;
+  }
+  
+  #product>.order>form>.alert {
+    width: 560px;
+    background-color: #f7f7f7;
+    padding: 6px;
+    padding-left: 20px;
+    color: #999;
+    box-sizing: border-box;
+  }
+  
+  #product>.order>form>.alert>ul {
+    list-style: inherit;
+  }
+  
+  #product>.order>form>.alert>ul>li {
+    line-height: 20px;
+  }
+  
+  #product>.order>form>.alert>ul>li>span {
+    position: relative;
+    left: -6px;
+  }
+</style>
+<head th:replace="~{/layout/header::headFrag('결제')}"></head>
+<body>
+  <div th:replace="~{/layout/header::gnbFrag}"></div>
+   <section class="ftco-section ftco-cart">
+    <div class="container">
+      <div id="wrapper">
+        <main id="product">
+          <section class="order">
+            <form method="post" id="frm1"  action="/regular/regularPurchase.do">
+              <table border="0">
+                <tr>
+                  <th>상품명</th>
+                  <th>인원수</th>
+                  <th>배송날짜</th>
+                  <th>구독가격</th>
+                  <th>총구독가격</th>
+                </tr>
+                <tr>
+                  <td><article>
+                      <a href="#"> <img
+                        th:src="@{/regular/regularMainDisplay.do(regularNo=${regularDetail.regularNo})}"
+                        alt="1">
+                      </a>
+                      <div>
+                        <h2>
+                          <a th:href="@{/regular/regularDetail.do(regularNo=${regularDetail.regularNo})}" th:text="${regularDetail.regularName}">상품명</a>
+                        </h2>
+                        <p th:text="${regularDetail.regularSimpleDetail}">상품설명</p>
+                      </div>
+                    </article></td>
+                  <td>
+                    <input type="button" onclick="fnDown()" value="-" style="width: 20px">
+                    <input type="text" name="regCount" id="regCount" th:value="${regCount}" readOnly style="border: none; background-color: transparent; outline: none; box-shadow: none; width: 15px;  text-align: center; ">
+                    <input type="button" onclick="fnUp()" value="+" style="width:20px">
+                  </td>
+                  <td th:text="${regDeliveryDay}"></td>
+                  <td id="SellPrice" th:text="${#numbers.formatInteger(regularDetail.regularSellPrice, 3, 'COMMA') + ' 원'}">27,000</td>  
+                  <td class="totalPrice" th:text="${#numbers.formatInteger(totalPrice, 3, 'COMMA') + ' 원'}">27,000</td>
+                </tr>
+              </table>
+              <div class="final">
+                <h2>최종결제 정보</h2>
+                <table>
+                  <tr>
+                    <td>구독 총금액</td>
+                    <td class="totalPrice"  th:text="${#numbers.formatInteger(totalPrice, 3, 'COMMA')}">27,000</td>
+                  </tr>
+                  <tr>
+                    <td>할인금액</td>
+                    <td id="disCount" th:text="${#numbers.formatInteger(totalPrice * 0.05, 3, 'COMMA')}"></td>
+                  </tr>
+                  <tr>
+                    <td>전체주문금액</td>
+                    <td id="regPurchaseLastPrice" th:text="${#numbers.formatInteger(totalPrice - (totalPrice * 0.05), 3, 'COMMA')}"></td>
+                  </tr>
+                </table>
+                <input type="button" onclick="fnRegPay()" id="btnRegPay"
+                  value="구독결제"  style="cursor: pointer">
+              </div>
+              <!-- 배송정보 -->
+              <article class="delivery">
+                <h1>배송정보</h1>
+    
+                <label for="old"><input type="radio" name="delivery" id="old" value="1" onclick="fnOldDelivery()" checked>회원정보 배송정보</label> 
+                <label for="new"><input type="radio" name="delivery" id="new" value="2" onclick="fnNewDelivery()">새로운 배송정보</label>
+                <table>
+                  <tr>
+                    <td>수취인</td>
+                    <td><input type="text" name="name" id="name" th:value="${loginId.name}"></td>
+                  </tr>
+                  <tr>
+                    <td>휴대폰</td>
+                    <td><input type="text" name="mobile" id="mobile" th:value="${loginId.mobile}"></td>
+                  </tr>
+                  <tr>
+                    <td>우편번호</td>
+                    <td>
+                      <input type="text" onclick="execDaumPostcode()" name="postcode" id="postcode" placeholder="우편번호" th:value="${loginId.postcode}" readonly="readonly">
+                      <input type="button" onclick="execDaumPostcode()"value="우편번호 찾기"><br>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>도로명, 지번주소</td>
+                    <td><input type="text" name="roadAddress" id="roadAddress" th:value="${loginId.roadAddress}" placeholder="도로명주소"> 
+                    <input type="hidden" name="jibunAddress" id="jibunAddress" th:value="${loginId.jibunAddress}" placeholder="지번주소">
+                      <span id="guide" style="color: #999; display: none"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>상세주소</td>
+                    <td><input type="text" name="detailAddress" id="detailAddress" th:value="${loginId.detailAddress}" placeholder="상세주소"> 
+                    <input type="text" name="extraAddress" id="extraAddress" th:value="${loginId.extraAddress}" placeholder="참고항목">
+                    </td>
+                  </tr>
+                </table>
+              </article>
+              <!-- 할인정보 -->
+              <article class="discount">
+                <h1>할인정보</h1>
+                <h1>정기구독 5% 할인</h1>
+              </article>
+              <!-- 결제방법 -->
+              <article class="payment">
+                <h1>결제방법</h1>
+                <div>
+                  <span>신용카드</span>
+                  <p>
+                    <label> <input type="radio" name="regPg"
+                      value="tosspayments">신용카드 결제
+                    </label>
+                  </p>
+                </div>
+                <div>
+                  <span>기타</span>
+                  <p>
+                    <label> <input type="radio" name="regPg" class="pg" value="kakaopay">카카오페이</label>
+                  </p>
+                </div>
+              </article>
+                <input type="hidden" name="regCustomerUid" id="customerUidField"> 
+                <input type="hidden" name="loginId" th:value="${loginId.id}">
+                <input type="hidden" name="regularNo" th:value="${regularDetail.regularNo}"> 
+                <input type="hidden" name="regPurchasePrice" th:value="${regularDetail.regularSellPrice}">
+                <input type="hidden" name="customerUidField">
+                <input type="hidden" name="regDeliveryDay" th:value="${regDeliveryDay}">
+              </form>
+           </section>
+         </main>
+        </div>
+      </div>
+    </section>  
+  <div th:replace="~{/layout/footer::gnbFooter}"></div> 
+</body>
+<!-- 결제 완료시 서브밋 커스터머 아이디, 유저아이디, 배송정보, 결제금액, 월수금(1) 화목토(2)  -->
+
+<script>
+function fnDown() {
+    var currentValue = parseInt($('#regCount').val());
+    if (currentValue > 1) {
+      $('#regCount').val(currentValue - 1);
+      updateTotalPrice(currentValue - 1); // add this line
+    } else {
+      alert('최소 구독 인원은 1명 입니다.');
+    }
+  }
+
+  function fnUp() {
+    var currentValue = parseInt($('#regCount').val());
+    if (currentValue < 9) {
+      $('#regCount').val(currentValue + 1);
+      updateTotalPrice(currentValue + 1);
+    } else {
+      alert('최대 구독 인원은 9명 입니다.');
+    }
+  }
+
+  function updateTotalPrice(quantity) {
+    var SellPrice = parseInt($('#SellPrice').text().replace(/,/g, '')); // remove ',' before parsing
+    var price = Math.floor(SellPrice * quantity);
+    var discount = Math.floor(price * 0.05);
+    var finalPrice = Math.floor(price - discount);
+
+    $('.totalPrice').text(price.toLocaleString() + ' 원');
+    $('#disCount').text(discount.toLocaleString());
+    $('#regPurchaseLastPrice').text(finalPrice.toLocaleString() + ' 원');
+  }  
+	function fnRegPay() {
+  	var regularName = "[[${regularDetail.regularName}]]";
+  	var regAmount = $('#regPurchaseLastPrice').text();
+		var merchant_uid = "pupo_" + new Date().getTime();
+		var customer_uid = "[[${loginId.id}]]_" + new Date().getTime();
+		const IMP = window.IMP; // 생략 가능
+		IMP.init("imp60175747"); // 예: imp00000000a
+		IMP.request_pay({ // param
+			pg : $("input[name='regPg']:checked").val(),
+			pay_method : "card", // "card"만 지원됩니다
+			merchant_uid : merchant_uid, // 빌링키 발급용 주문번호
+			customer_uid : customer_uid,
+			name : regularName,
+			amount : regAmount,
+			buyer_email : "[[${loginId.email}]]",
+			buyer_name : "[[${loginId.name}]]",
+			buyer_tel : "[[${loginId.mobile}]]",
+		}, function(rsp) { // callback
+			if (rsp.success) {
+				alert('정기 결제 및 첫 결제가 완료 됐습니다.');
+				$('#customerUidField').val(customer_uid);
+				$('#frm1').submit();
+			} else {
+				alert('결제실패 정보를 다시 확인 해주세요');
+			}
+		});
+	}
+</script>
+<script>
+	// 본 예제에서는 도로명 주소 표기 방식에 대한 법령에 따라, 내려오는 데이터를 조합하여 올바른 주소를 구성하는 방법을 설명합니다.
+	function execDaumPostcode() {
+		new daum.Postcode(
+				{
+					oncomplete : function(data) {
+						// 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+						// 도로명 주소의 노출 규칙에 따라 주소를 표시한다.
+						// 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+						var roadAddr = data.roadAddress; // 도로명 주소 변수
+						var extraRoadAddr = ''; // 참고 항목 변수
+
+						// 법정동명이 있을 경우 추가한다. (법정리는 제외)
+						// 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+						if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+							extraRoadAddr += data.bname;
+						}
+						// 건물명이 있고, 공동주택일 경우 추가한다.
+						if (data.buildingName !== '' && data.apartment === 'Y') {
+							extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+						}
+						// 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+						if (extraRoadAddr !== '') {
+							extraRoadAddr = ' (' + extraRoadAddr + ')';
+						}
+
+						// 우편번호와 주소 정보를 해당 필드에 넣는다.
+						document.getElementById('postcode').value = data.zonecode;
+						document.getElementById("roadAddress").value = roadAddr;
+						document.getElementById("jibunAddress").value = data.jibunAddress;
+
+						// 참고항목 문자열이 있을 경우 해당 필드에 넣는다.
+						if (roadAddr !== '') {
+							document.getElementById("extraAddress").value = extraRoadAddr;
+						} else {
+							document.getElementById("extraAddress").value = '';
+						}
+
+						var guideTextBox = document.getElementById("guide");
+						// 사용자가 '선택 안함'을 클릭한 경우, 예상 주소라는 표시를 해준다.
+						if (data.autoRoadAddress) {
+							var expRoadAddr = data.autoRoadAddress + extraRoadAddr;
+							guideTextBox.innerHTML = '(예상 도로명 주소 : ' + expRoadAddr + ')';
+							guideTextBox.style.display = 'block';
+
+						} else if (data.autoJibunAddress) {
+							var expJibunAddr = data.autoJibunAddress;
+							guideTextBox.innerHTML = '(예상 지번 주소 : ' + expJibunAddr + ')';
+							guideTextBox.style.display = 'block';
+						} else {
+							guideTextBox.innerHTML = '';
+							guideTextBox.style.display = 'none';
+						}
+					}
+				}).open();
+	}
+
+	// 수량 변경 할 시 value에 반영
+	function fnRegularCount(value) {
+		$('#regularCount').val(value);
+	}
+
+	// 새로운 배송 정보 입력하기
+	function fnNewDelivery() {
+		$('#name').val('');
+		$('#mobile').val('');
+		$('#postcode').val('');
+		$('#roadAddress').val('');
+		$('#jibunAddress').val('');
+		$('#detailAddress').val('');
+		$('#extraAddress').val('');
+	}
+	// 회원정보 배송 클릭 시 회원정보에 정보로 다시 넣어주기.
+	function fnOldDelivery() {
+		$('#name').val('[[${loginId.name}]]');
+		$('#mobile').val('[[${loginId.mobile}]]');
+		$('#postcode').val('[[${loginId.postcode}]]');
+		$('#roadAddress').val('[[${loginId.roadAddress}]]');
+		$('#jibunAddress').val('[[${loginId.jibunAddress}]]');
+		$('#detailAddress').val('[[${loginId.detailAddress}]]');
+		$('#extraAddress').val('[[${loginId.extraAddress}]]');
+	}
+	
+	
+
+	
+</script>
+</html>

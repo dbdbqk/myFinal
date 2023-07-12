@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+<style>
+        #product > .complete > article {
+            margin-top: 16px;
+        }
+        #product > .complete > .message > h2 {
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            color: #555;
+            padding: 10px;
+        }
+        #product > .complete > .message > h2 > i {
+            font-size: 26px;
+        }
+        #product > .complete > .message > p {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px;
+            text-align: center;
+        }
+        #product > .complete > article {
+            margin-top: 16px;
+        }
+        #product > .complete > article > h1 {
+            font-weight: bold;
+            font-size: 14px;
+            color: #111;
+            padding: 6px 0;
+        }
+        #product > .complete table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            border-top: 2px solid #000;
+        }
+        #product > .complete table tr {
+            border-bottom: 1px solid #d3d3d3;
+        }
+        #product > .complete table tr > th {
+            padding: 12px 0;
+            background: #fff;
+            color: #383838;
+            font-size: 0.95em;
+            text-align: center;
+            letter-spacing: -0.1em;
+        }
+        /* 상품정보 */
+        #product > .complete > .info > table tr > th:last-child {
+            width: 200px;
+        }
+        #product > .complete > .info table tr > td {
+            text-align: center;
+        }
+        #product > .complete > .info table tr > td:last-child {
+            color: #ff006c;
+            font-weight: bold;
+            text-align: right;
+        }
+        #product > .complete > .info table tr > td > article {
+            overflow: hidden;
+            padding: 6px;
+        }
+        #product > .complete > .info table tr > td img {
+            float: left;
+            width: 80px;
+        }
+        #product > .complete > .info table tr > td div {
+            float: left;
+            margin-left: 10px;
+            text-align: left;
+        }
+        #product > .complete > .info table tr > td div > p {
+            text-align: left;
+            color: #777;
+            margin-top: 4px;
+        }
+        #product > .complete > .info .total > td > table {
+            border: none;
+        }
+        #product > .complete > .info .total > td > table tr {
+            border: none;
+        }
+        #product > .complete > .info .total > td > table td {
+            text-align: right;
+            color: #111;
+            background: #f2f2f2;
+            font-weight: normal;
+            border-bottom: none;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #product > .complete > .info .total > td > table tr:last-child span {
+            font-weight: bold;
+            color: #ff006c;
+        }
+        /* 주문정보 */
+        #product > .complete > .order table tr > td {
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #product > .complete > .order > table tr > td:nth-child(1) {
+            width: 160px;
+            background: #f2f2f2;
+        }
+        #product > .complete > .order table tr > td:nth-child(2) {
+            width: auto;
+        }
+        #product > .complete > .order table tr > td:nth-child(3) {
+            width: 100px;
+            text-align: right;
+            vertical-align: top;
+            background: #f2f2f2;
+        }
+        #product > .complete > .order table tr > td:nth-child(4) {
+            width: 100px;
+            text-align: right;
+            vertical-align: top;
+            background: #f2f2f2;
+        }
+        #product > .complete > .order table span {
+            font-weight: bold;
+            color: #ff006c;
+        }
+        /* 배송정보 */
+        #product > .complete > .delivery table tr > td:nth-child(1) {
+            width: 160px;
+            background: #f2f2f2;
+        }
+        #product > .complete > .delivery table tr > td {
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #product > .complete > .delivery table tr > td:nth-child(3) {
+            width: 200px;
+            background: #f2f2f2;
+        }
+        /* 꼭 알아두세요 */
+        #product > .complete > .alert {
+            width: 100%;
+            background-color: #f7f7f7;
+            padding: 10px;
+            padding-left: 24px;
+            color: #999;
+            box-sizing: border-box;
+        }
+        #product > .complete > .alert > h1 {
+            margin-left: -12px;
+        }
+        #product > .complete > .alert > ul {
+            list-style: inherit;
+        }
+        #product > .complete > .alert > ul > li {
+            line-height: 20px;
+        }
+        #product > .complete > .alert > ul > li > span {
+            position: relative;
+            left: -6px;
+        }
+
+</style>
+
+<!--/* /layout/header.html의 headFrag조각으로 head 태그를 바꾼다. */-->
+<head th:replace="~{/layout/header::headFrag('구독완료')}"></head>
+  <body>
+    <div th:replace="~{/layout/header::gnbFrag}"></div>
+    <section class="ftco-section ftco-cart">
+      <div class="container">
+        <div id="wrapper">
+            <main id="product">
+                <section class="complete">
+                    <article class="message">
+                        <h2>
+                            <span th:text="${regPurchase.userDTO.name}"></span>님 주문이 정상적으로 완료되었습니다.
+                            <i class="far fa-smile" aria-hidden="true"></i>
+                        </h2>
+                        <p>
+                            즐거운 쇼핑이 되셨습니까? 항상 고객님을 최우선으로 생각하는 풀파워샐러드가 되겠습니다.
+                        </p>
+                    </article>
+                    <!-- 상품정보 -->
+                    <article class="info">
+                        <h1>구독정보</h1>
+                        <table border="0">
+                            <tr>
+                                <th>구독명</th>
+                                <th>구독금액</th>
+                                <th>할인금액</th>
+                                <th>인원</th>
+                                <th>주문금액</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <article>
+                                        <img th:src="@{/regular/regularMainDisplay.do(regularNo=${regPurchase.regularProductDTO.regularNo})}">
+                                        <div>
+                                            <h2>
+                                                <a th:href="@{/regular/regularDetail.do(regularNo=${regPurchase .regularProductDTO.regularNo})}">상품명</a>
+                                            </h2>
+                                            <p th:text="${regPurchase.regularProductDTO.regularSimpleDetail}">상품설명</p>
+                                        </div>
+                                    </article>
+                                </td>
+                                <td th:text="${#numbers.formatInteger(regPurchase.regPurchasePrice, 3, 'COMMA') } + 원"></td>
+                                <td th:text="${#numbers.formatInteger(regPurchase.regPurchasePrice * 0.05, 3, 'COMMA') } + 원"></td>
+                                <td th:text="${regPurchase.regProductCount}"></td>
+                                <td th:text="${#numbers.formatInteger(regPurchase.regPurchaseLastPrice, 3, 'COMMA') } + 원"></td>
+                            </tr>
+                        </table>
+                    </article>
+                    <!-- 주문정보 -->
+                    <article class="order">
+                        <h1>주문정보</h1>
+                        <table border="0">
+                            <tr>
+                                <td>구독번호</td>
+                                <td th:text="${regPurchase.regPurchaseNo}">2008101324568</td>
+                                <td >구독 금액</td>
+                                <td>
+                                    <span th:text="${#numbers.formatInteger(regPurchase.regPurchasePrice, 3, 'COMMA') } + 원"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>결제방법</td>
+                                <td th:text="${regPurchase.regPg}"></td>
+                                <td>할인금액</td>
+                                <td><span th:text="${#numbers.formatInteger(regPurchase.regPurchasePrice * 0.05, 3, 'COMMA') } + 원"></span></td>
+                            </tr>
+                            <tr>
+                                <td>주문자/연락처</td>
+                                <td th:text="|${regPurchase.userDTO.name} / ${regPurchase.userDTO.mobile}|">홍길동/010-1234-1234</td>
+                                <td>총결제금액</td>
+                                <td><span th:text="${#numbers.formatInteger(regPurchase.regPurchaseLastPrice, 3, 'COMMA') } + 원"></span></td>
+                            </tr>
+                        </table>
+                    </article>
+                    <!-- 배송정보 -->
+                    <article class="delivery">
+                        <h1>배송정보</h1>
+                        <table border="0">
+                            <tr>
+                                <td>수취인</td>
+                                <td th:text="${regPurchase.regularShipDTO.regReceiverName}">수취인 이름</td>
+                            </tr>
+                            <tr>
+                                <td>연락처</td>
+                                <td th:text="${regPurchase.regularShipDTO.regReceiverMobile}">수취인 연락처</td>
+    
+                            </tr>
+                            <tr>
+                                <td>배송지 주소</td>
+                                <td th:text="${regPurchase.regularShipDTO.regShipRoadAddress +' ' + regPurchase.regularShipDTO.regShipDetailAddress}">부산광역시 강남구 대연동 123 10층</td>
+                            </tr>
+                            <tr>
+                                <td>배송 날짜</td>
+                                <td th:text="${regPurchase.regDeliveryDay}"></td>
+                            </tr>
+                        </table>
+                    </article>
+            </section>
+          </main>
+        </div>
+      </div>
+    </section>
+    <div class="d-flex justify-content-center mb-5" >
+      <button type="button" onclick="btnMain()" class="btn btn-primary btn-lg mr-2">Main</button> <button type="button" onclick="btnMyPage()" class="btn btn-primary btn-lg mr-2">마이페이지</button> <button type="button" onclick="btnList()" class="btn btn-primary btn-lg mr-2">상품리스트</button>
+    </div>
+   <div th:replace="~{/layout/footer::gnbFooter}"></div> 
+  </body>
+
+  <script>
+    function btnMain(){
+    	location.href="/";
+    }
+    function btnMyPage(){
+    	location.href="/regular/regularMyOrder.html";
+    }
+    function btnList(){
+    	location.href="/regular/regularList.do";
+    }
+  </script>
+
+</html>

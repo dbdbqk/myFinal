@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/layout/header::headFrag('Welcome')}"></head>
+<div th:replace="~{/layout/header::gnbFrag}"></div>
+<body class="goto-here">
+  <div class="overlay"></div>
+    <div class="container">
+    <!-- 여기서부터적기 -->
+  <h1>비밀번호 찾기</h1>
+  
+  <hr>
+  
+  <div>
+    <form id="frmFindPw" method="post" th:action="@{/user/findPw.do}">
+    
+      <div>
+        <label for="id">
+          *아이디<br>
+          <input type="text" name="id" id="id">
+        </label>
+      </div>
+      
+      <div>
+        <label for="email">
+          *이메일<br>
+          <input type="text" name="email" id="email">
+        </label>
+      </div>
+      
+      <button>임시 비밀번호 발급</button>
+
+      <br><br>
+      
+      <div>
+        <a th:href="@{/user/login/form}">로그인</a> / 
+        <a th:href="@{/user/findId/form}">아이디 찾기</a> /
+        <a th:href="@{/user/agree/form}">회원가입</a>
+      </div>
+      
+    </form>
+  </div>
+   <!-- 여기까지적기 -->
+    </div>
+<div th:replace="~{/layout/footer::gnbFooter}"></div> 
+<script th:inline="javascript">
+
+
+  $(document).ready(function(){
+    fn_findPw2();
+  });
+
+  function fn_findPw2(){
+
+      $('#frmFindPw').on('submit', function(event){
+        
+      });
+  }
+
+</script>
+  </body>
+</html>

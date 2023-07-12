@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/login.css}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" integrity="sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<head th:replace="~{/layout/header::headFrag('Welcome')}"></head>
+<div th:replace="~{/layout/header::gnbFrag}"></div>
+
+
+<body class="goto-here">
+  <div class="ftco-section">
+  <div class="container">
+    <div class="nav navbar">
+          <div class="row section-header-breadcrumb ftco-animate">
+            <div class="breadcrumb-item active"><a th:href="@{/}">home</a></div>
+            <div class="breadcrumb-item">로그인</div>
+          </div>
+        </div>
+    <div class="container d-flex justify-content-center">
+      <div class="wrapper fadeInDown">
+        <div id="formContent">
+          <div class="login-content">
+          <!-- form 태그 시작 -->
+            <form id="frmLogin" method="post" th:action="@{/user/login.do}">
+              <input type="hidden" name="url" th:value="${url}">
+                <div class="ftco-animate">
+                  <div class="heading-section text-center">
+                    <span class="subheading ftco-animate ">FullPowerSalad</span>
+                    <h2 class="title ftco-animate">로그인</h2>
+                  </div>
+                  <em>로그인을 하시면 다양한 혜택을 누리실 수 있습니다.</em>
+                </div>
+                <div class="mt-3 input-div one ftco-animate">
+                  <div class="i">
+                    <i class="fas fa-user"></i>
+                  </div>
+                  <div class="div ftco-animate">
+                    <h5>아이디</h5>
+                    <input type="text" name="id" id="id" class="input fadeIn second">
+                  </div>
+                </div>
+                <div class="input-div pass ftco-animate">
+                  <div class="i"> 
+                    <i class="fas fa-lock"></i>
+                  </div>
+                  <div class="div ftco-animate">
+                    <h5>비밀번호</h5>
+                    <input type="password" name="pw" id="pw" class="input fadeIn third">
+                  </div>
+                </div>
+                <div class="ftco-animate d-flex justify-content-around">
+                  <label style="-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none">
+                    <input class="check" type="checkbox" id="chkRememberId" >
+                    아이디 기억
+                  </label>
+                  <label style="-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none">
+                    <input class="check" type="checkbox" id="auto-login">
+                    자동 로그인
+                  </label>
+                </div>
+                <div class="ftco-animate">
+                  <button id="login-button" class="loginButton fadeIn fourth">로그인</button>
+                </div>
+                <div class="ftco-animate">
+                  <span class="d-flex justify-content-around mb-3">
+                    <a class="a-link" th:href="@{/user/findId.html}">아이디 찾기</a>
+                    <span>|</span>
+                    <a class="a-link" th:href="@{/user/findPw.html}">비밀번호 찾기</a>
+                    <span>|</span>
+                    <a class="a-link" th:href="@{/user/agree.html}" >회원가입</a>
+                  </span>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>   
+      </div>
+      </div>
+    <div th:replace="~{/layout/footer::gnbFooter}"></div> 
+    <div th:replace="~{/layout/sweetAlert::gnbSweetAlert}"></div> 
+</body>
+<script th:src="@{/js/login.js}"></script>
+<script th:inline="javascript">
+
+  // 로그인하기
+  function fnLogin(){
+    
+    $('#frmLogin').on('submit', function(event){
+      
+      // 아이디, 비밀번호 공백 검사
+      if($('#id').val() == '' || $('#pw').val() == ''){
+        swal("로그인 실패","아이디와 비밀번호를 모두 입력하세요.","info");
+        event.preventDefault();
+        return;
+      }
+      
+      // 아이디 기억을 체크하면 rememberId 쿠키에 입력된 아이디를 저장
+      if($('#chkRememberId').is(':checked')){
+        $.cookie('rememberId', $('#id').val());
+      } else {
+        $.cookie('rememberId', '');
+      }
+      
+    });
+    
+  }
+  
+  // 쿠키에 기억된 아이디 보여주기(아이디 기억)
+  function fnDisplayRememberId(){
+    
+    // rememberId 쿠키에 저장된 아이디를 가져와서 표시
+    
+    let rememberId = $.cookie('rememberId');
+    if(rememberId == ''){
+      $('#id').val('');
+      $('#chkRememberId').prop('checked', false);
+    } else {
+      $('#id').val(rememberId);
+      $('#chkRememberId').prop('checked', true);
+    }
+    
+  }
+  
+  $(function(){
+    fnLogin();
+    fnDisplayRememberId();
+  });
+  
+</script>
+</html>

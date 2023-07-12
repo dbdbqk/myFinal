@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/admin/adminMain::headFrag('관리자- 구독상품등록')}"></head>
+<div th:replace="~{/admin/adminMain::topFrag}"></div>
+<div th:replace="~{/admin/adminMain::sideFrag}"></div>
+<!-- 아이콘 -->
+<link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+<style>
+    table {
+      border-collapse: collapse;
+      border-top: 1px solid #444444;
+      border-bottom: 1px solid #444444;
+      width: 100%;
+    }
+    th, td {
+      text-align: center;
+      padding: 2px;
+      border-bottom: 1px solid #444444;
+    }
+    th {
+      background-color: #CBFF75;
+    }
+    tr:not(:first-child):not(:last-child) {
+      border-top: none;
+      border-bottom: none;
+      background-color: transparent;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    div {
+      text-align: right;
+      margin-bottom: 10px;
+    }
+    tr:first-child th,
+/*     tr:first-child td { */
+/*       /* Apply background color to the first row only */ */
+/*       background-color: #CBFF75; */
+/*     } */
+    .fa-user {
+      margin-right: 10px;
+    }
+    
+    .home {
+    text-decoration: none; /* 링크의 밑줄 제거 */
+    color: initial; /* 기본 링크 색상 유지 */
+  }
+
+  .home:hover {
+    color: green; /* 마우스를 가져다 대면 초록색으로 변경 */
+  }   
+  </style>
+  <script>
+    // 메인페이지로가기 이벤트
+    function showText() {
+      document.getElementById("hoverText").style.display = "inline";
+    }
+
+  </script>
+<body>
+<div class="main-content">
+        <div class="section-body">
+          <div class="row mt-5">
+
+
+  <form id="regularForm">
+    <table id="regularTable">
+    <thead>
+      <tr>
+        <th>구독번호</th>
+        <th>구독명</th>
+        <th>판매가</th>
+        <th>구독상태</th>
+        <th>구독시작일</th>
+        <th>다음결제일/취소일</th>
+        <th>구독결제횟수</th>
+        <th>아이디</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!-- 여기에 회원 데이터를 동적으로 추가할 예정입니다 -->
+      <tr th:each="list, vs: ${regOrderList}">
+      <td th:text="${list.regPurchaseNo}"></td>
+      <td th:text="${list.regularProductDTO.regularName}"></td>
+      <td th:text="${list.regPurchaseLastPrice}"></td>
+      <th:block th:if="${list.regCancel == 1 and list.regPayStatus == 1}">
+        <td>구독취소예정</td> 
+      </th:block>
+      <th:block th:if="${list.regCancel == 0 and list.regPayStatus == 1}">
+        <td>구독중</td>
+      </th:block>
+      <th:block th:if="${list.regCancel == 1 and list.regPayStatus == 2}">
+        <td>구독취소</td>
+      </th:block>
+      <td th:text="${#dates.format(list.regPurchaseAt, 'yyyy년 MM월 dd일 E요일')}">
+      <td th:text="${#dates.format(oneMonth[vs.index], 'yyyy년 MM월 dd일 E요일')}">
+      <td th:text="${list.regPayCount}">
+      <td th:text="${list.userDTO.id}">
+       </tr>
+     </tbody> 
+      <tr>
+        <td th:utext="${pagination}"></td>
+      </tr>
+    </table>
+    
+  </form>
+  </div>
+  </div>
+  </div>
+    <div th:replace="~{/admin/adminMain::footerFrag}"></div>
+</body>
+</html>

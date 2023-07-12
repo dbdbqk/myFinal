@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace는 @Mapper를 지정한다. -->
+<mapper namespace="com.gdu.pupo.mapper.CouponMapper">
+
+<!-- 쿠폰 조회 -->
+  <select id="selectUserCouponList" resultType="CouponDTO">
+   SELECT COUPON_NO
+		, COUPON_NAME
+		, COUPON_SALE
+		, COUPON_USE
+		, COUPON_BEGIN_AT
+		, COUPON_END_AT
+	FROM COUPON_T;	
+  </select>
+  
+<!-- 쿠폰 등록 -->
+	<insert id="insertAddCoupon" parameterType="CouponDTO"  useGeneratedKeys="true" keyProperty="couponNo">
+	INSERT INTO COUPON_T (
+		  COUPON_NAME
+		, COUPON_SALE 
+		, COUPON_USE
+		, COUPON_BEGIN_AT
+		, COUPON_END_AT	
+	) VALUES (
+	  #{couponName}
+	, #{couponSale}
+	, 1
+	, #{couponBeginAt}
+	, #{couponEndAt}
+	);
+	</insert>
+<!-- 쿠폰발행 전 확인 -->
+<select id="selectgetEventCoupon" parameterType="CouponUserDTO"  resultType="String">
+   SELECT COUNT(COUPON_NO) couponNo
+	FROM  COUPON_USER_T
+    WHERE ID = #{id}
+      AND COUPON_NO = 1
+  </select>
+  	
+<!-- 쿠폰 발행 -->
+	<insert id="insertGetEventCoupon" parameterType="CouponUserDTO">
+	INSERT INTO COUPON_USER_T (	
+		  COUPON_NO
+		, ID
+		, REG_COUPON_CREATED_AT	
+		, REG_COUPON_USED
+	) VALUES (
+	  1
+	, #{id}
+	, NOW()
+	, 1
+	);
+	</insert>
+	<!-- 쿠폰 삭제  -->
+  <delete id="deleteCoupon" parameterType="CouponDTO">
+DELETE
+  FROM COUPON_T
+ WHERE COUPON_NO = #{couponNo};
+  </delete>
+	
+
+	
+
+
+</mapper>

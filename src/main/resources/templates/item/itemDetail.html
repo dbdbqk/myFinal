@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{/layout/header::headFrag('Welcome')}"></head>
+<body>
+  <div class="container">
+    <div class="mainContent" style="margin-top:50px; margin-left:200px;">
+      <div class="title">
+        <h3>상품 상세보기</h3>
+      </div>
+      <div class="modi_form">
+        <table>
+          <tr>
+            <td>상품 이름</td>
+              <td><a th:text="${item.itemName}"></a></td>
+            </tr>
+            
+            <tr>
+              <td>상품 상세정보</td>
+              <td><textarea name="description" id="description" style="height: 200px; width: 350px; resize:none;" th:text="${item.description}"></textarea></td>
+            </tr>
+            
+            <tr>
+              <td>판매가격</td>
+              <td><a th:text="${item.price}"></a></td>
+            </tr>
+            
+            <tr>
+              <td>재고</td>
+              <td><a th:text="${item.stock}"></a></td>
+            </tr>
+            
+            <tr>
+              <td>
+              <form class="frm_remove" method="post" th:action="@{/item/itemRemove.do}">
+                <input type="hidden" name="itemId" th:value="${item.itemId}">
+                <button id="deleteBtn">삭제</button>
+              </form>
+              </td>
+              <td>
+              <form class="frm_modify" method="get" th:action="@{/item/itemModify.html}">
+                <input type="hidden" name="itemId" th:value="${item.itemId}">
+                <button id="modifyBtn">수정</button>
+            <input id="backBtn" type="button" value="목록" th:onclick="fnList()">
+                </form>
+              </td>
+            </tr>
+          </table>
+      </div>
+    </div>
+  </div>
+  <div th:replace="~{/layout/footer::gnbFooter}"></div>
+</body>
+<script th:inline="javascript">
+  function fnList(){
+    location.href="itemList.html";
+  }
+ </script>
+ <style>
+  td{
+      border-bottom: 1px solid #ddd;
+      padding: 8px;
+      height: 30px;
+           }
+  li{
+      list-style: none;
+  }
+  a{
+  text-decoration: none;
+   color: #303030;
+   font-size: 17px;
+  }          
+  .regi_form{
+    margin-top:50px;
+    margin-left: 100px;
+  }
+  #modifyBtn,
+  #deleteBtn,
+  #resetBtn,
+  #backBtn,
+  #addCategoryBtn {
+      background-color: #8FA691 ; 
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      font-weight: bold;
+      margin: 20px 2px;
+    
+  }
+  #deleteBtn:focus,
+  #modifyBtn:focus,
+  #resetBtn:focus{
+   outline:none;
+   border: none;
+  }
+  .regi_btn{
+      float: center;
+      margin-right:330px;
+  }
+  .mainContent .title {
+  margin-left: 100px;
+  }
+  .mainContent h3{
+  font-weight:500;
+  font-size:24px;
+  margin-bottom:10px;
+  }
+  .mainContent p{
+      color: #b9b9b9;
+      margin-top:0;
+      
+  }
+</style>
+</html>

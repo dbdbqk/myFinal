@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<!--/* /layout/header.html의 headFrag조각으로 head 태그를 바꾼다. */-->
+<head th:replace="~{/layout/header::headFrag('고객센터')}"></head>
+<div th:replace="~{/layout/header::gnbFrag}"></div>
+  
+<body class="goto-here">
+  <div class="ftco-section">
+    <div class="container">
+      <header> 
+        <div class="nav navbar">
+          <div class="row section-header-breadcrumb ftco-animate">
+           <div class="breadcrumb-item active"><a th:href="@{/}">HOME</a></div>
+            <div class="breadcrumb-item">마이페이지</div>
+          </div>
+        </div>
+        <div class="row justify-content-center mb-2 pb-3">
+        <div class="col-md-7 heading-section text-center">
+            <span class="subheading ftco-animate ">FullPowerSalad</span>
+            <h2 class="mb-4 ftco-animate">환영합니다</h2>
+            <p class="ftco-animate">어서오세요</p>
+          </div>
+          </div>
+      </header>
+      <section>
+        <div class="row aline-items-center">
+          <div class="col-lg-2 ftco-animate">
+            <div class=" ftco-animate mt-5">
+              <h3 class="heading blind">카테고리</h3>
+                <ul class="categories">
+                  <li><a th:href="@{/user/modifyInfo.html}">내 정보 수정</a></li>
+                  <li><a th:href="@{/regular/regularMyOrder.html}">나의 구독내역</a></li>
+                </ul>
+            </div>
+            <div class=" ftco-animate mt-5">
+              <h4 class="heading">고객센터</h4>
+              <p><strong>7777-7777</strong><br>평일, 토요일 7:00~18:00<br>공휴일 7시 ~ 13시 <br>(일요일 휴무)</p>
+            </div>
+          </div>
+          <div class="col-lg-10 ftco-animate">
+            <div class="row mt-4">
+              <div class="card-body" style="width: 100%">
+                
+                
+                
+                
+                
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div th:replace="~{/layout/footer::gnbFooter}"></div> 
+</body>
+<script th:inline="javascript">
+
+
+</script>
+</html>

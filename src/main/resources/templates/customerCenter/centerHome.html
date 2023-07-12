@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<style>
+.btnDedatil {
+cursor: pointer;
+}
+</style>
+<!--/* /layout/header.html의 headFrag조각으로 head 태그를 바꾼다. */-->
+<head th:replace="~{/layout/header::headFrag('고객센터')}"></head>
+<div th:replace="~{/layout/header::gnbFrag}"></div>
+  
+<body class="goto-here">
+  <div class="ftco-section">
+    <div class="container">
+      <header> 
+        <div class="nav navbar ftco-animate">
+          <div class="row section-header-breadcrumb">
+            <div class="breadcrumb-item"><a th:href="@{/}">HOME</a></div>
+            <div class="breadcrumb-item">고객센터</div>
+          </div>
+        </div>
+        <div class="row justify-content-center mb-2 pb-3">
+          <div class="col-md-7 heading-section text-center">
+              <span class="subheading ftco-animate ">FullPowerSalad</span>
+              <h2 class="mb-4 ftco-animate">무엇을 도와 드릴까요?</h2>
+          </div>
+        </div>
+      </header>
+      <section>
+        <div class="row mt-1">
+        <div class="ftco-animate"> 
+              <a class="nav-link d-flex justify-content-center" th:href="@{/customerCenter/faq.html}">자주 묻는 질문 보러가기</a>
+              </div>
+          <div class="card-body" style="width: 100%">
+            <div class="row ftco-animate">
+              <div class="col-md-12">
+                <div class="carousel-testimony owl-carousel">
+                  <th:block th:each="faq, vs:${faqList}" > 
+                    <div class="item">
+                      <div class="testimony-wrap p-4 pb-5">
+                        <div class=" mb-5" >
+                          <span class="quote d-flex align-items-center justify-content-center">
+                            <i class="fa-solid fa-question fa-2xl"></i>
+                          </span>
+                        </div>
+                      <div class="text text-center">
+                       <h4 class="mb-3 " th:text="${faq.faqTitle}"></h4>
+                       <p class="name line mb-4" th:text="|[${faq.faqCategory}]|"></p>
+                       <span class="position" th:text="${faq.faqContent}"></span>
+                      </div>
+                    </div>
+                  </div>
+                </th:block>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="card ftco-animate">
+               <a th:href="@{/customerCenter/qna.html}" class="list-group-item list-group-item-action">1:1문의</a>
+              <a th:href="@{/customerCenter/voc.html}" class="list-group-item list-group-item-action">고객의소리</a>
+          </div>
+          <div class="card mt-4 ftco-animate">
+                      <div class="card-body">
+               <h3 class="card-title">고객센터</h3>
+              <p class="card-text">7777-7777</p>
+             <p class="card-text">평일, 토요일 7:00~18:00</p>
+             <p class="card-text">공휴일 7시 ~ 13시</p>
+             <p class="card-text">(일요일 휴무)</p>
+              </div>
+          </div>
+        </div>
+         
+        <div class="col-sm-6 ftco-animate">
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title">공지사항</h3>
+              <a class="nav-link text-right" th:href="@{/customerCenter/notice.html}">더 보러가기</a>
+             <ul class="list-group list-group-flush">
+              <th:block th:if="${not #lists.isEmpty(noticeList)}">
+               <th:block th:each="notice, vs:${noticeList}" th:if="${vs.index &lt; 5}"> 
+                <li class="btnDedatil list-group-item list-group-item-action" th:data-notice_no="${notice.noticeNo}">
+                <span class="text-left" th:text="|[${notice.noticeCategory}]|"></span>
+                <span class="text-center" th:text="${notice.noticeTitle}"></span>
+                <span class="text-right" th:text="${#dates.format(notice.noticeCreatedAt, 'yyyy-MM-dd')}"></span>
+                </li>
+                </th:block>
+                </th:block>
+              </ul>
+             
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    </div>
+  </div>
+  <div th:replace="~{/layout/footer::gnbFooter}"></div> 
+</body>
+<script th:inline="javascript">
+$('.btnDedatil').on('click', function() {
+    location.href = '/customerCenter/noticeDetail.html?noticeNo=' + $(this).data('notice_no');
+  });
+   
+</script>
+<script src="https://kit.fontawesome.com/bfad29b6fa.js" crossorigin="anonymous"></script>
+</html>

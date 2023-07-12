@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<!--/* /layout/header.html의 headFrag조각으로 head 태그를 바꾼다. */-->
+<head th:replace="~{/layout/header::headFrag('fullPowerSalad')}"></head>
+
+<!--/* /layout/header.html의 gnbFrag조각으로 div 태그를 바꾼다. */-->
+<div th:replace="~{/layout/header::gnbFrag}"></div>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+<link rel="stylesheet" th:href="@{/css/animate.css}">
+<link rel="stylesheet" th:href="@{/css/owl.carousel.min.css}">
+<link rel="stylesheet" th:href="@{/css/owl.theme.default.min.css}">
+<link rel="stylesheet" th:href="@{/css/magnific-popup.css}">
+<link rel="stylesheet" th:href="@{/css/aos.css}">
+<link rel="stylesheet" th:href="@{/css/ionicons.min.css}">
+<link rel="stylesheet" th:href="@{/css/bootstrap-datepicker.css}">
+<link rel="stylesheet" th:href="@{/css/jquery.timepicker.css}">
+<link rel="stylesheet" th:href="@{/css/flaticon.css}">
+<link rel="stylesheet" th:href="@{/css/icomoon.css}">
+<link rel="stylesheet" th:href="@{/css/style2.css}">
+
+<body class="goto-here">
+  <section class="ftco-section ftco-cart">
+    <div class="container">
+      <div class="row">
+        <form method="post" th:action="@{/item/removeCart.do}" id="frm_remove_cart">
+          <table class="table">
+            <thead class="thead-primary">
+              <tr class="text-center">
+                <th class="td_width_1 chk_all"><input type="checkbox" id="chk_all" class="screen_out" onclick="updateCartTotals()"></th>
+                <th>상품명</th>
+                <th>가격</th>
+                <th>수량</th>
+                <th>합계</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="text-center" th:each="cartList : ${cartList}">
+                <td class="product-name"><input type="checkbox" th:id="|chk_one${cartList.cartItemId}|" th:value="${cartList.cartItemId}" name="cartItemId" onclick="updateCartTotals()"></td>
+                <td class="td_width_3" th:text="${cartList.itemDTO.itemName}"></td>
+                <td class="td_width_4 price_td" th:text="${cartList.itemDTO.price}"></td>
+                <td class="td_width_4 table_text_align_center">
+                  <div>
+                    <strong th:text="${cartList.quantity}"></strong>
+                  </div>
+                </td>
+                <td class="td_width_4 table_text_align_center" th:text="${cartList.itemDTO.price} * ${cartList.quantity}"></td>
+              </tr>
+            </tbody>
+          </table>
+          <button class="btn btn-primary py-3 px-4" onclick="removeSelectedItems()">선택삭제</button>
+        </form>
+        <div class="col-lg-4 mt-5 cart-wrap ftco-animate">
+          <div class="cart-total mb-3">
+            <h3>Cart Totals</h3>
+            <p class="d-flex">
+              <span>합계</span>
+              <span id="totalPrice"></span>
+            </p>
+            <p class="d-flex">
+              <span>배송비</span>
+              <span id="shippingFee"></span>
+            </p>
+            <hr>
+            <p class="d-flex total-price">
+              <span>주문금액</span>
+              <span id="orderAmount"></span>
+            </p>
+          </div>
+          <p><button onclick="fnOrder()" class="btn btn-primary py-3 px-4">주문하기</button></p>
+          <p><button onclick="fnOrder2()" class="btn btn-primary py-3 px-4">결제하기(수정)</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div th:replace="~{/layout/footer::gnbFooter}"></div>
+</body>
+
+
+<script th:inline="javascript">
+  // 전체선택
+  function fnChkAll() {
+    $('#chk_all').on('click', function() {
+      $(':checkbox[name="cartItemId"]').prop('checked', $(this).prop('checked'));
+      updateCartTotals();
+    });
+  }
+
+  // 개별선택
+  function fnChkOne() {
+    let chkOne = $('.chk_one');
+    chkOne.on('click', function() {
+      let chkCnt = 0;
+      for (let i = 0; i < chkOne.length; i++) {
+        chkCnt += $(chkOne[i]).prop('checked') ? 1 : 0;
+      }
+      $('#chk_all').prop('checked', chkCnt == chkOne.length);
+      updateCartTotals();
+    });
+  }
+
+  $(function() {
+    fnChkAll();
+    fnChkOne();
+    fnRemoveList();
+    updateCartTotals();
+  });
+
+  // 선택 항목 삭제
+  function fnRemoveList() {
+    $('#frm_remove_cart').on('submit', function(event) {
+      if ($(':checkbox[name="cartItemId"]:checked').length == 0) {
+        alert('선택된 제품이 없습니다.');
+        event.preventDefault();
+        return;
+      }
+      if (confirm('선택된 제품을 모두 삭제할까요?') == false) {
+        event.preventDefault();
+        return;
+      }
+    });
+  }
+
+//총 금액과 결제 금액 업데이트
+  function updateCartTotals() {
+    var checkedItems = $(':checkbox[name="cartItemId"]:checked');
+    var totalPrice = 0;
+
+    checkedItems.each(function() {
+      var quantity = parseInt($(this).closest('tr').find('.td_width_4 strong').text());
+      var price = parseInt($(this).closest('tr').find('.td_width_4.price_td').text());
+      totalPrice += quantity * price;
+    });
+
+    var shippingFee = 0;
+    if (totalPrice < 30000) {
+      shippingFee = 3000;
+    }
+
+    var orderAmount = totalPrice + shippingFee;
+
+    $('#totalPrice').text(totalPrice.toLocaleString() + ' 원');
+    $('#shippingFee').text(shippingFee.toLocaleString() + ' 원');
+    $('#orderAmount').text(orderAmount.toLocaleString() + ' 원');
+  }
+
+  // 선택된 상품 삭제
+  function removeSelectedItems() {
+    var checkedItems = $(':checkbox[name="cartItemId"]:checked');
+    if (checkedItems.length === 0) {
+      alert('선택된 제품이 없습니다.');
+      return;
+    }
+
+    if (confirm('선택된 제품을 모두 삭제할까요?')) {
+      checkedItems.each(function() {
+        $(this).closest('tr').remove();
+      });
+      updateCartTotals();
+    }
+  }
+  
+  function fnOrder2() {
+	    let totalPrice = /*[[${totalPrice}]]*/ null;
+	    IMP.init('imp35851217');
+	    IMP.request_pay({
+	      pg: "kakaopay",
+	      pay_method: 'card',
+	      merchant_uid: 'merchant_' + new Date().getTime(),
+	      name: '풀파워',
+	      amount: totalPrice,
+	      buyer_email: 'gdj61@naver.com',
+	      buyer_name: '구매자',
+	      buyer_tel: 'gdj61',
+	      buyer_addr: '서울특별시 금천구 가산동'
+	    }, function(rsp) {
+	      if (rsp.success) {
+	        var msg = '결제가 완료되었습니다.';
+	        alert(msg);
+	        location.href = '/item/orderList.html';
+	      } else {
+	        var msg = '결제에 실패하였습니다.';
+	        rsp.error_msg;
+	      }
+	    });
+
+	  }
+
+  
+  // 주문 페이지로 이동
+  function fnOrder() {
+    var checkedItems = $(':checkbox[name="cartItemId"]:checked');
+    if (checkedItems.length === 0) {
+      alert('주문할 상품을 선택해주세요.');
+      return;
+    }
+
+    // 선택된 상품의 ID를 배열로 저장
+    var selectedItems = [];
+    checkedItems.each(function() {
+      selectedItems.push($(this).val());
+    });
+
+    // 주문 페이지로 이동
+    var url = '/order'; // 주문 페이지 URL
+    // URL에 선택된 상품의 ID 전달 (예: /order?items=1,2,3)
+    url += '?items=' + selectedItems.join(',');
+    window.location.href = url;
+  }
+</script>
+
+</html>

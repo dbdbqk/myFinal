@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Close Window</title>
+</head>
+<body onload="callOpenerFunctionAndClose();">
+</body>
+<script>
+  function callOpenerFunctionAndClose() {
+    window.opener.checkReview();
+    window.close();
+  }
+</script>
+</html>

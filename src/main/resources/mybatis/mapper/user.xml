@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace는 @Mapper를 지정한다. -->
+<mapper namespace="com.gdu.pupo.mapper.UserMapper">
+
+  <select id="selectUserById" parameterType="String" resultType="UserDTO">
+    SELECT USER_NO
+         , ID
+         , PW
+         , NAME
+         , GENDER
+         , EMAIL
+         , MOBILE
+         , BIRTHYEAR
+         , BIRTHDATE
+         , POSTCODE
+         , ROAD_ADDRESS
+         , JIBUN_ADDRESS
+         , DETAIL_ADDRESS
+         , EXTRA_ADDRESS
+         , AGREECODE
+         , JOINED_AT
+         , PW_MODIFIED_AT
+         , AUTOLOGIN_ID
+         , AUTOLOGIN_EXPIRED_AT
+         , SELLER_CHECK
+         , POINT
+         , GRADE
+      FROM USER_T
+     WHERE ID = #{id}
+  </select>
+  
+    <select id="selectSleepUserById" parameterType="String" resultType="SleepUserDTO">
+    SELECT ID
+      FROM SLEEP_USER_T
+     WHERE ID = #{id}
+  </select>
+  
+    <select id="selectLeaveUserById" parameterType="String" resultType="LeaveUserDTO">
+    SELECT ID
+      FROM LEAVE_USER_T
+     WHERE ID = #{id}
+  </select>
+  
+    <select id="selectUserByEmail" parameterType="String" resultType="UserDTO">
+    SELECT EMAIL
+      FROM USER_T
+     WHERE EMAIL = #{email}
+  </select>
+  
+    <select id="selectSleepUserByEmail" parameterType="String" resultType="SleepUserDTO">
+    SELECT EMAIL
+      FROM SLEEP_USER_T
+     WHERE EMAIL = #{email}
+  </select>
+  
+    <select id="selectLeaveUserByEmail" parameterType="String" resultType="LeaveUserDTO">
+    SELECT EMAIL
+      FROM LEAVE_USER_T
+     WHERE EMAIL = #{email}
+  </select> 
+  
+  
+   <!--유저존재여부찾기 찾기 -->
+   <select id="selectUserPwByUserDTO" parameterType="UserDTO" resultType="String">
+    SELECT COUNT(ID) cntUserYn
+      FROM USER_T
+      WHERE ID = #{id}
+        AND EMAIL = #{email}
+  </select>
+  
+   <insert id="insertUser" useGeneratedKeys="true" keyProperty="userNo" parameterType="UserDTO">
+    INSERT INTO USER_T (
+        ID
+      , PW
+      , NAME
+      , GENDER
+      , EMAIL
+      , MOBILE
+      , BIRTHYEAR
+      , BIRTHDATE
+      , POSTCODE
+      , ROAD_ADDRESS
+      , JIBUN_ADDRESS
+      , DETAIL_ADDRESS
+      , EXTRA_ADDRESS
+      , AGREECODE
+      , JOINED_AT
+      , PW_MODIFIED_AT
+      , AUTOLOGIN_ID
+      , AUTOLOGIN_EXPIRED_AT
+      , SELLER_CHECK
+      , POINT
+      , GRADE
+    ) VALUES (
+      	#{id}
+      , #{pw}
+      , #{name}
+      , #{gender}
+      , #{email}
+      , #{mobile}
+      , #{birthyear}
+      , #{birthdate}
+      , #{postcode}
+      , #{roadAddress}
+      , #{jibunAddress}
+      , #{detailAddress}
+      , #{extraAddress}
+      , #{agreecode}
+      , NOW()
+      , NOW()
+      , NULL
+      , NULL
+      , #{sellerCheck}
+      , 0
+      , 'bronze'
+    )
+  </insert>
+
+  <!-- 다른 insert 구문들... -->
+
+  <update id="insertAutologin" parameterType="UserDTO">
+    UPDATE USER_T
+       SET AUTOLOGIN_ID = #{autologinId}
+         , AUTOLOGIN_EXPIRED_AT = #{autologinExpiredAt}
+     WHERE ID = #{id}
+  </update>
+  
+  <!-- 다른 update 구문들... -->
+  
+  <select id="selectAutologin" parameterType="String" resultType="UserDTO">
+    SELECT ID
+      FROM USER_T
+     WHERE AUTOLOGIN_ID = #{autologinId}
+       AND AUTOLOGIN_EXPIRED_AT > NOW()
+  </select>
+  
+  <!-- 다른 select 구문들... -->
+  
+  <insert id="insertLeaveUser" parameterType="LeaveUserDTO">
+    INSERT INTO LEAVE_USER_T (
+        ID
+      , EMAIL
+      , JOINED_AT
+      , LEAVED_AT
+    ) VALUES (
+        #{id}
+      , #{email}
+      , #{joinedAt}
+      , NOW()
+    )
+  </insert>
+  
+  <!-- 다른 insert 구문들... -->
+  
+  <update id="modifyUserInfo" parameterType="UserDTO">
+    UPDATE USER_T
+       SET NAME = #{name}
+        , GENDER = #{gender}
+        , EMAIL = #{email}
+        , MOBILE = #{mobile}
+      	, BIRTHYEAR = #{birthyear}
+      	, BIRTHDATE =#{birthdate}
+    WHERE ID = #{id}
+  </update>
+  
+   <delete id="deleteUser" parameterType="String">
+    DELETE
+      FROM USER_T
+     WHERE ID = #{id}
+  </delete>
+  
+      <!-- 아이디 찾기 -->
+    <select id="selectFindUserId" parameterType="UserDTO" resultType="UserDTO">
+    SELECT ID, JOINED_AT joinedAt
+      FROM USER_T
+      WHERE NAME = #{name}
+        AND EMAIL = #{email}
+  </select>
+
+
+
+  
+      <!--임시비밀번호 저장 -->
+  <update id="updateUserTempPw" parameterType="UserDTO">
+    UPDATE USER_T
+       SET PW = #{pw}
+      WHERE ID = #{id}
+        AND EMAIL = #{email}
+  </update>
+  
+      <!-- 비밀번호 재설정을 위한 pw확인 -->
+  <select id="selectUserPwCheck" parameterType="UserDTO" resultType="String">
+    SELECT COUNT(ID) cntUserYn
+      FROM USER_T
+      WHERE ID = #{id}
+        AND PW = #{pw}
+  </select>
+  
+    <!-- 비밀번호 재설정 -->
+   <update id="updateUserPw" parameterType="UserDTO">
+    UPDATE USER_T
+       SET PW = #{pw}
+      WHERE ID = #{id}
+ </update>
+ 
+ <!-- 휴면처리 1단계 : 1년(12개월) 이상 접속 내역(USER_ACCESS_T의 LAST_LOGIN_AT)이 없는 회원을 휴면 테이블에 저장하기 -->
+   <insert id="insertSleepUser">
+    INSERT INTO SLEEP_USER_T (
+        USER_NO
+      , ID
+      , PW
+      , NAME
+      , GENDER
+      , EMAIL
+      , MOBILE
+      , BIRTHYEAR
+      , BIRTHDATE
+      , POSTCODE
+      , ROAD_ADDRESS
+      , JIBUN_ADDRESS
+      , DETAIL_ADDRESS
+      , EXTRA_ADDRESS
+      , AGREECODE
+      , JOINED_AT
+      , PW_MODIFIED_AT
+      , SLEPT_AT
+      , SELLER_CHECK
+      , POINT
+      , GRADE      
+    ) (SELECT U.USER_NO
+            , U.ID
+            , U.PW
+            , U.NAME
+            , U.GENDER
+            , U.EMAIL
+            , U.MOBILE
+            , U.BIRTHYEAR
+            , U.BIRTHDATE
+            , U.POSTCODE
+            , U.ROAD_ADDRESS
+            , U.JIBUN_ADDRESS
+            , U.DETAIL_ADDRESS
+            , U.EXTRA_ADDRESS
+            , U.AGREECODE
+            , U.JOINED_AT
+            , U.PW_MODIFIED_AT
+            , NOW()
+         FROM USER_T U LEFT OUTER JOIN USER_ACCESS_T UA
+           ON U.ID = UA.ID
+        WHERE MONTHS_BETWEEN(NOW(), UA.LAST_LOGIN_AT) >= 12  <!-- 12개월 이상 로그인 이력이 없는 회원 -->
+           OR (MONTHS_BETWEEN(SYSDATE, U.JOINED_AT) >= 12 AND UA.LAST_LOGIN_AT IS NULL))  <!-- 가입일이 12개월 이상 지나고, 로그인 이력이 아예 없는 회원 -->
+  </insert> 
+
+  <!-- 휴면처리 2단계 : 1년(12개월) 이상 접속 내역(USER_ACCESS_T의 LAST_LOGIN_AT)이 없는 회원을 회원 테이블에서 삭제하기 -->
+  <delete id="deleteUserForSleep">
+    DELETE
+      FROM USER_T
+     WHERE ID IN(SELECT U.ID
+                   FROM USER_T U LEFT OUTER JOIN USER_ACCESS_T UA
+                     ON U.ID = UA.ID
+                  WHERE MONTHS_BETWEEN(SYSDATE, UA.LAST_LOGIN_AT) >= 12
+                     OR (MONTHS_BETWEEN(SYSDATE, U.JOINED_AT) >= 12 AND UA.LAST_LOGIN_AT IS NULL))
+  </delete>
+
+  <!-- 휴면복원 1단계 : 휴면 테이블의 데이터를 회원 테이블에 저장하기 -->
+  <insert id="insertRestoreUser" parameterType="String">
+    INSERT INTO USER_T (
+        USER_NO
+      , ID
+      , PW
+      , NAME
+      , GENDER
+      , EMAIL
+      , MOBILE
+      , BIRTHYEAR
+      , BIRTHDATE
+      , POSTCODE
+      , ROAD_ADDRESS
+      , JIBUN_ADDRESS
+      , DETAIL_ADDRESS
+      , EXTRA_ADDRESS
+      , AGREECODE
+      , JOINED_AT
+      , PW_MODIFIED_AT
+      , SELLER_CHECK
+      , POINT
+      , GRADE
+    ) (SELECT USER_NO
+            , ID
+            , PW
+            , NAME
+            , GENDER
+            , EMAIL
+            , MOBILE
+            , BIRTHYEAR
+            , BIRTHDATE
+            , POSTCODE
+            , ROAD_ADDRESS
+            , JIBUN_ADDRESS
+            , DETAIL_ADDRESS
+            , EXTRA_ADDRESS
+            , AGREECODE
+            , JOINED_AT
+            , PW_MODIFIED_AT
+        	, SELLER_CHECK
+       		, POINT
+        	, GRADE
+         FROM SLEEP_USER_T
+        WHERE ID = #{id})
+  </insert>
+   
+  <!-- 휴면복원 2단계 : 복원할 회원을 SLEEP_USER_T 테이블에서 삭제하기 -->
+  <delete id="deleteSleepUser" parameterType="String">
+    DELETE
+      FROM SLEEP_USER_T
+     WHERE ID = #{id}
+  </delete>
+  
+  <select id="selectUserByUserDTO" parameterType="UserDTO" resultType="UserDTO">
+    SELECT ID, SELLER_CHECK
+      FROM USER_T
+     WHERE ID = #{id}
+       AND PW = #{pw}
+  </select>
+  
+  <update id="updateUserAccess" parameterType="String">
+    UPDATE USER_ACCESS_T
+       SET LAST_LOGIN_AT = NOW()
+     WHERE ID = #{id}
+  </update>
+  
+   <insert id="insertUserAccess" parameterType="String">
+    INSERT INTO USER_ACCESS_T (
+        ID
+      , LAST_LOGIN_AT
+    ) VALUES (
+        #{id}
+      , NOW()
+    )
+  </insert>
+  
+   <update id="deleteAutologin" parameterType="String">
+    UPDATE USER_T
+       SET AUTOLOGIN_ID = NULL
+         , AUTOLOGIN_EXPIRED_AT = NULL
+     WHERE ID = #{id}
+  </update>
+ <!-- 회원 조회 -->
+ <select id="selectUserByCount" parameterType="String" resultType="UserDTO">
+    SELECT USER_NO
+         , ID
+         , NAME
+         , GENDER
+         , EMAIL
+         , MOBILE
+         , BIRTHYEAR
+         , BIRTHDATE
+         , POSTCODE
+         , ROAD_ADDRESS
+         , JIBUN_ADDRESS
+         , DETAIL_ADDRESS
+         , EXTRA_ADDRESS
+         , JOINED_AT
+         , SELLER_CHECK
+         , POINT
+         , GRADE
+      FROM USER_T
+     WHERE ID = #{id}
+  </select>
+  
+ 
+
+</mapper>

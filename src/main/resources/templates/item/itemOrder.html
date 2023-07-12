@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<!--/* /layout/header.html의 headFrag조각으로 head 태그를 바꾼다. */-->
+<head th:replace="~{/layout/header::headFrag('Welcome')}"></head>
+
+<body>
+  <!-- 배송정보 -->
+            <article class="delivery">
+              <h1>배송정보</h1>
+  
+              <label for="old"><input type="radio" name="delivery" id="old" value="1" onclick="fnOldDelivery()" checked>회원정보 배송정보</label> 
+              <label for="new"><input type="radio" name="delivery" id="new" value="2" onclick="fnNewDelivery()">새로운 배송정보</label>
+              <table>
+                <tr>
+                  <td>수취인</td>
+                  <td><input type="text" name="name" id="name" th:value="${loginId.name}"></td>
+                </tr>
+                <tr>
+                  <td>휴대폰</td>
+                  <td><input type="text" name="mobile" id="mobile" th:value="${loginId.mobile}"></td>
+                </tr>
+                <tr>
+                  <td>우편번호</td>
+                  <td>
+                    <input type="text" onclick="execDaumPostcode()" name="postcode" id="postcode" placeholder="우편번호" th:value="${loginId.postcode}" readonly="readonly">
+                    <input type="button" onclick="execDaumPostcode()"value="우편번호 찾기"><br>
+                  </td>
+                </tr>
+                <tr>
+                  <td>도로명, 지번주소</td>
+                  <td><input type="text" name="roadAddress"
+                    id="roadAddress" th:value="${loginId.roadAddress}"
+                    placeholder="도로명주소"> <input type="hidden"
+                    name="jibunAddress" id="jibunAddress"
+                    th:value="${loginId.jibunAddress}" placeholder="지번주소">
+                    <span id="guide" style="color: #999; display: none"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>상세주소</td>
+                  <td><input type="text" name="detailAddress"
+                    id="detailAddress" th:value="${loginId.detailAddress}"
+                    placeholder="상세주소"> <input type="text"
+                    name="extraAddress" id="extraAddress"
+                    th:value="${loginId.extraAddress}" placeholder="참고항목">
+                  </td>
+                </tr>
+              </table>
+            </article>
+  <div th:replace="~{/layout/footer::gnbFooter}"></div>
+</div>
+
+</body>
+
+<script th:inline="javascript">
+  function fnFileCheck(vThis){
+      let maxSize = 1024 * 1024* 10;
+      let files = vThis.files;
+      $('#fileList').empty();
+      $.each(files, function(i, file){
+        if(file.size > maxSize){
+          alert('최대 크기 10MB');
+          $(vThis).val('');
+          $('#fileList').text('첨부파일 목록');
+          return;
+        }
+        $('#fileList').append('<div>' + file.name + '</div>');
+      })
+      
+    }
+  
+  function fnList(){
+      location.href="/item/itemManage.html";
+  }
+  
+  
+</script>
+
+<style>
+  td{
+      border-bottom: 1px solid #ddd;
+      padding: 8px;
+      height: 30px;
+           }
+  li{
+      list-style: none;
+  }
+  a{
+  text-decoration: none;
+   color: #303030;
+   font-size: 17px;
+  }          
+  .regi_form{
+    margin-top:50px;
+    margin-left: 100px;
+  }
+  #uploadBtn,
+  #enrollBtn,
+  #resetBtn,
+  #backBtn,
+  #addCategoryBtn {
+      background-color: #8FA691 ; 
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      font-weight: bold;
+      margin: 20px 2px;
+    
+  }
+  #enrollBtn:focus,
+  #uploadBtn:focus,
+  #resetBtn:focus{
+   outline:none;
+   border: none;
+  }
+  .regi_btn{
+      float: center;
+      margin-right:330px;
+  }
+  .mainContent .title {
+  margin-left: 100px;
+  }
+  .mainContent h3{
+  font-weight:500;
+  font-size:24px;
+  margin-bottom:10px;
+  }
+  .mainContent p{
+      color: #b9b9b9;
+      margin-top:0;
+      
+  }
+</style>
+</html>

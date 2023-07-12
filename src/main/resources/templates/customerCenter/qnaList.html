@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<!--/* /layout/header.html의 headFrag조각으로 head 태그를 바꾼다. */-->
+<head th:replace="~{/layout/header::headFrag('마이페이지')}"></head>
+<div th:replace="~{/layout/header::gnbFrag}"></div>
+  
+<body class="goto-here">
+  <div class="ftco-section">
+    <div class="container">
+      <header> 
+        <div class="nav navbar">
+          <div class="row section-header-breadcrumb ftco-animate">
+            <div class="breadcrumb-item active"><a th:href="@{/}">home</a></div>
+            <div class="breadcrumb-item"><a th:href="@{/customerCenter/centerHome.html}">고객센터</a></div>
+            <div class="breadcrumb-item">1:1 문의 리스트 -문의자 마이 페이지</div>
+          </div>
+        </div>
+        <h1 class="ftco-animate text-center font-weight-bold pt-5">1:1문의 - 문의자 마이 페이지</h1>
+      </header>
+      <section>
+        <div class="row aline-items-center">
+          <div class="col-lg-2 ftco-animate">
+            <div class=" ftco-animate mt-5">
+              <h3 class="heading blind">카테고리</h3>
+                <ul class="categories">
+                  <li><a th:href="@{/customerCenter/notice.html}">공지사항</a></li>
+                  <li><a th:href="@{/customerCenter/faq.html}">자주 묻는 질문</a></li>
+                  <li><a th:href="@{/customerCenter/qna.html}">1:1문의</a></li>
+                  <li><a th:href="@{/customerCenter/voc.html}">고객의 소리</a></li>
+                </ul>
+            </div>
+            <div class=" ftco-animate mt-5">
+              <h4 class="heading">고객센터</h4>
+              <p><strong>7777-7777</strong><br>평일, 토요일 7:00~18:00<br>공휴일 7시 ~ 13시 <br>(일요일 휴무)</p>
+            </div>
+          </div>
+          <div class="col-lg-10 ftco-animate">
+            <div class="row mt-4">
+              <div class="card-body" style="width: 100%">
+                <div class="float-left">
+                  <div class="text-left mt-3" id="totalRecord" th:text="|전체 ${totalRecord}개|"></div>
+                </div>
+                <div class="float-right">
+                  <select class="form-control selectric" th:id="recordPerPage">
+                    <option value="10">10개</option>
+                    <option value="20">20개</option>
+                    <option value="30">30개</option>
+                  </select>
+                </div>
+                <div class="clearfix mb-3" style="table-layout : fixed"></div>
+                <div style="table-layout : fixed;">
+                  <table class="table table-borderless">
+                    <thead>
+                      <tr>
+                        <th scope="row" colspan="4">
+                          <div id="Accordion_wrap">
+                            <th:block th:if="${#lists.isEmpty(qnaList)}">
+                              <div class="que" >
+                              게시글이 없습니다.
+                              </div>
+                            </th:block>
+                            <th:block th:if="${not #lists.isEmpty(qnaList)}"> 
+                              <th:block th:each="qna, vs:${qnaList}" > 
+                                <div class="que">
+                                  <em class="text-left" th:text="${beginNo - vs.index}" ></em>
+                                  <em th:id="qnaCategory" th:text="|&nbsp[${qna.qnaCategory}]|"></em>
+                                  <span th:text="${qna.qnaTitle}"></span> 
+                                  <div class="arrow-wrap">
+                                    <span class="arrow-top"><i class="fa-solid fa-angle-up" style="color: #82ae46;"></i></span>
+                                    <span class="arrow-bottom"><i class="fa-solid fa-angle-down" style="color: #82ae46;"></i></span>
+                                   </div>    
+                                </div>
+                                <div class="anw">
+                                  <span th:text="${qna.qnaContent}"></span>
+                                </div>
+                              </th:block>
+                            </th:block>
+                          </div>
+                        </th>
+                      </tr>
+                        
+                      
+                    </thead>
+                  </table>
+                </div>
+                <nav>
+                  <div class="d-flex justify-content-center">
+                    <div th:utext="${pagination}"></div>
+                  </div>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div th:replace="~{/layout/footer::gnbFooter}"></div> 
+</body>
+<script th:inline="javascript">
+
+// recordPerPage의 변경
+ $('#recordPerPage').on('change', function(){
+   location.href = '/customerCenter/change/record.do?recordPerPage=' + $(this).val();  // session에 recorePerPage 올리기
+ });
+ 
+ // 세션에 저장된 recordPerPage값으로 <select> 태그의 값을 세팅
+ let a = /*[[${session.recordPerPage}]]*/ null;
+ if(a === null){
+   $('#recordPerPage').val(10);
+ } else {
+   $('#recordPerPage').val(a);
+ }
+
+
+$(function() {
+// 라디오 버튼 클릭 이벤트 처리
+$('input[name="kind"]').on('click', function fnKindChange() {
+   $(this).prop('checked', true); // 선택한 라디오 버튼에 checked 속성 추가
+  $('#frmKind').submit();
+});
+});
+
+/*
+$('input[name="kind"]').on('click', function fnKindChange() {
+    $('input[name="kind"]').removeAttr('checked'); // 모든 라디오 버튼의 checked 속성 제거
+    $(this).prop('checked', true); // 선택한 라디오 버튼에 checked 속성 추가
+    $('#frmKind').submit();
+  });
+
+*/
+
+/*
+
+$(function() {
+    // 라디오 버튼 클릭 이벤트 처리
+    $('input[name="kind"]').on('click', function fnKindChange() {
+      var selectedValue = $(this).val(); // 선택한 라디오 버튼의 값
+
+      // AJAX 요청
+      $.ajax({
+        url: '/customerCenter/faq.html?kind=' + $(this).val(),
+        method: 'GET',
+        data: { kind: selectedValue },
+        success: function(response) {
+          console.log('AJAX 요청 성공');
+          // 선택한 라디오 버튼에 checked 속성 추가
+          $('input[name="kind"]').prop('checked', false);
+          $('input[name="kind"][value="' + selectedValue + '"]').prop('checked', true);
+        },
+        error: function(xhr, status, error) {
+          console.error('AJAX 요청 실패:', error);
+        }
+      });
+    });
+  });
+  
+
+*/
+
+
+$(".que").click(function() {
+     $(this).next(".anw").stop().slideToggle(300);
+    $(this).toggleClass('on').siblings().removeClass('on');
+    $(this).next(".anw").siblings(".anw").slideUp(300); // 1개씩 펼치기
+  });
+</script>
+<script src="https://kit.fontawesome.com/bfad29b6fa.js" crossorigin="anonymous"></script>
+</html>

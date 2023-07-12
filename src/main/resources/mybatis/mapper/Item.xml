@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace는 @Mapper를 지정한다. -->
+<mapper namespace="com.gdu.pupo.mapper.ItemMapper">
+
+<!-- 아이템 등록 -->
+<insert id="insertItem" useGeneratedKeys="true" keyProperty="itemId" parameterType="ItemDTO">
+  INSERT INTO ITEM(ITEM_NAME, PRICE, DESCRIPTION, CATEGORY_ID, STOCK)
+  VALUES (#{itemName}, #{price}, #{description}, #{categoryId}, #{stock})
+</insert>
+
+<!-- 전체 아이템 조회 -->
+<select id="getAllItems" resultType="ItemDTO">
+  SELECT ITEM_ID, ITEM_NAME, PRICE, DESCRIPTION, STOCK
+    FROM ITEM I
+   ORDER BY ITEM_ID DESC
+</select>
+
+<!-- 카테고리 별 아이템 조회 -->
+<select id="getItemsByCategoryId" parameterType="int" resultType="ItemDTO">
+  SELECT I.ITEM_ID, I.ITEM_NAME, I.PRICE, I.DESCRIPTION, I.STOCK, C.CATEGORY_NAME
+    FROM ITEM I INNER JOIN CATEGORY C 
+      ON I.CATEGORY_ID = C.CATEGORY_ID
+   WHERE I.CATEGORY_ID = #{categoryId}
+</select>
+
+
+<!-- 아이템 상세 조회 -->
+<select id="getItem" parameterType="int" resultType="ItemDTO">
+  SELECT ITEM_ID, ITEM_NAME, PRICE, DESCRIPTION, CATEGORY_ID, STOCK
+    FROM ITEM
+   WHERE ITEM_ID = #{itemId}
+</select>
+
+<!-- 아이템 수정 -->
+<update id="updateItem" parameterType="ItemDTO">
+  UPDATE ITEM
+     SET ITEM_NAME = #{itemName}
+       , PRICE = #{price}
+       , DESCRIPTION = #{description}
+       , CATEGORY_ID = #{categoryId}
+       , STOCK = #{stock}
+   WHERE ITEM_ID = #{itemId}
+</update>
+
+<!-- 아이템 삭제 -->
+<delete id="deleteItem" parameterType="int">
+  DELETE FROM ITEM
+   WHERE ITEM_ID = #{itemId}
+</delete>
+
+<!-- 이미지 등록 -->
+<insert id="insertImg" useGeneratedKeys="true" keyProperty="imgId" parameterType="ItemImgDTO">
+    INSERT INTO ITEM_IMG(PATH, ORIGIN_NAME, FILESYSTEM_NAME, HAS_THUMBNAIL, ITEM_ID)
+      VALUES(#{path}, #{originName}, #{filesystemName}, #{hasThumbnail}, #{itemId})
+  </insert> 
+  
+<!-- 디테일 이미지 등록 -->
+<insert id="insertDetailImg" useGeneratedKeys="true" keyProperty="imgDetailId" parameterType="ItemImgDetailDTO">
+  INSERT INTO ITEM_IMG_DETAIL(PATH_DETAIL, ORIGIN_DETAIL_NAME, FILESYSTEM_DETAIL_NAME, HAS_DETAIL_THUMBNAIL, ITEM_ID)
+    VALUES(#{pathDetail}, #{originDetailName}, #{filesystemDetailName}, #{hasDetailThumbnail}, #{itemId})
+</insert>
+
+<!-- 이미지 조회 -->
+<select id="getImg" parameterType="int" resultType="ItemImgDTO">
+  SELECT IMG_ID, PATH, ORIGIN_NAME, FILESYSTEM_NAME, HAS_THUMBNAIL, ITEM_ID
+    FROM ITEM_IMG
+   WHERE ITEM_ID = #{itemId}
+</select>
+
+<!-- 상세 이미지 조회 -->
+<select id="getDetailImg" parameterType="int" resultType="ItemImgDetailDTO">
+  SELECT IMG_DETAIL_ID, PATH_DETAIL, ORIGIN_DETAIL_NAME, FILESYSTEM_DETAIL_NAME, HAS_DETAIL_THUMBNAIL, ITEM_ID
+    FROM ITEM_IMG_DETAIL
+   WHERE ITEM_ID = #{itemId}
+</select>
+
+<!-- 이미지 수정 -->
+<update id="editItemImg" parameterType="int">
+UPDATE ITEM_IMG
+SET PATH  = #{path}
+  , ORIGIN_NAME  = #{originName}
+  , FILESYSTEM_NAME  = #{filesystemName}
+  , HAS_THUMBNAIL  = #{hasThumbnail}
+  WHERE ITEM_ID = #{itemId}
+</update>
+
+<!-- 디테일 이미지 수정 -->
+<update id="editeditItemImgDetail" parameterType="int">
+UPDATE ITEM_IMG_DETAIL
+SET PATH_DETAIL  = #{pathDetail}
+  , ORIGIN_DETAIL_NAME  = #{originDetailName}
+  , FILESYSTEM_DETAIL_NAME  = #{filesystemDetailName}
+  , HAS_DETAIL_THUMBNAIL  = #{hasDetailThumbnail}
+  WHERE ITEM_ID = #{itemId}
+</update>
+
+<!-- 디테일 이미지 수정 -->
+<update id="editItemImgDetail" parameterType="int">
+UPDATE ITEM_IMG_DETAIL
+SET PATH_DETAIL  = #{pathDetail}
+  , ORIGIN_DETAIL_NAME  = #{originDetailName}
+  , FILESYSTEM_DETAIL_NAME  = #{filesystemDetailName}
+  , HAS_DETAIL_THUMBNAIL  = #{hasDetailThumbnail}
+  WHERE ITEM_ID = #{itemId}
+</update>
+
+</mapper>

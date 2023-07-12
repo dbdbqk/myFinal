@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/admin/adminMain::headFrag('관리자- 1:1문의')}"></head>
+<div th:replace="~{/admin/adminMain::topFrag}"></div>
+<div th:replace="~{/admin/adminMain::sideFrag}"></div>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-94034622-3');
+</script>
+<body>
+<!-- top -->
+ <div th:fragment="topFrag" class="top">
+  <div id="app">
+    <div class="main-wrapper main-wrapper-1">
+      <div class="navbar-bg"></div>
+      <nav class="navbar navbar-expand-lg main-navbar">
+        <form class="form-inline mr-auto">
+          <ul class="navbar-nav mr-3">
+            <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
+          </ul>
+        </form>
+
+        <ul class="navbar-nav navbar-right">
+          <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg beep"><i class="far fa-bell"></i></a>
+            <div class="dropdown-menu dropdown-list dropdown-menu-right">
+              <div class="dropdown-list-content dropdown-list-icons">
+                <a href="#" class="dropdown-item dropdown-item-unread">
+                </a>
+                <a href="#" class="dropdown-item">
+                  <div class="dropdown-item-icon bg-info text-white">
+                    <i class="far fa-user"></i>
+                  </div>
+                  <div class="dropdown-item-desc">
+                    회원가입 : <b>신규 고객</b>이 있습니다.
+                    <div class="time">20분 전</div>
+                  </div>
+                </a>
+                <a href="#" class="dropdown-item">
+                  <div class="dropdown-item-icon bg-info text-white">
+                    <i class="fas fa-bell"></i>
+                  </div>
+                  <div class="dropdown-item-desc">
+                    주문 : <b>신규 주문</b>이 있습니다.</b>
+                     <div class="time">1시간 전</div>
+                  </div>
+                </a>
+              </div>
+              <div class="dropdown-footer text-center">
+                <a href="#">View All <i class="fas fa-chevron-right"></i></a>
+              </div>
+            </div>
+          </li>
+          <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+            <div class="d-sm-none d-lg-inline-block">안녕하세요, 관리자님</div></a>
+            <div class="dropdown-menu dropdown-menu-right">
+              <div class="dropdown-title">Logged in 5 min ago</div>
+              <div class="dropdown-divider"></div>
+              <a th:href="@{/user/logout.do}" class="dropdown-item has-icon text-danger">
+                <i class="fas fa-sign-out-alt"></i> 로그아웃
+              </a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+     </div>
+  </div>
+ </div>  
+     <!-- sidebar -->    
+      <div th:fragment="sideFrag" class="side" >
+        <div class="main-sidebar sidebar-style-2">
+          <aside id="sidebar-wrapper">
+            <div class="sidebar-brand">
+              <a href="/admin/adminMain.html">관리자</a>
+            </div>
+            <div class="sidebar-brand sidebar-brand-sm">
+              <a href="index.html">관리자</a>
+            </div>
+            <ul class="sidebar-menu">
+              <li class="menu-header">회원</li>
+              <li class="dropdown">
+                <a href="#" class="nav-link has-dropdown"><i class="far fa-user"></i> <span>회원관리</span></a>
+                <ul class="dropdown-menu">
+                  <li><a th:href="@{/admin/adminUserList.html}">회원조회</a></li> 
+                  <li><a href="#">사용자</a></li> 
+                  <li><a href="#">판매자</a></li>  
+                </ul>
+              </li>
+            <li class="menu-header">주문</li>
+            <li class="dropdown">
+              <a href="#" class="nav-link has-dropdown"><i class="fas fa-receipt"></i> <span>주문관리</span></a>
+              <ul class="dropdown-menu">
+                <li><a class="nav-link" href="@{/admin/regularList.html}">주문조회</a></li> 
+                <li><a class="nav-link" href="errors-403.html">배송조회</a></li> 
+              </ul>
+            </li>
+            <li class="menu-header">상품</li>
+            <li class="dropdown">
+              <a href="#" class="nav-link has-dropdown"><i class="fa-solid fa-cart-shopping"></i> <span>상품관리</span></a>
+              <ul class="dropdown-menu">
+                <li><a class="nav-link" th:href="@{/regular/regularAddPage.html}">상품등록</a></li> 
+                <li><a class="nav-link" th:href="@{/admin/regularList.html}">상품조회</a></li> 
+              </ul>
+            </li>
+              <li class="menu-header">쿠폰</li>
+              <li class="dropdown">                     
+                <a href="#" class="nav-link has-dropdown"><i class="fas fa-ticket-alt"></i> <span>쿠폰관리</span></a>
+                <ul class="dropdown-menu">
+                 <!--  <li><a href="#">쿠폰생성</a></li>  -->
+                 <li><a th:onclick="|location.href='@{/admin/addCoupon.html}'|">쿠폰생성</a></li>
+                  <li><a href="/admin/couponList.html">쿠폰조회</a></li>  
+                </ul>
+              </li>
+              <li class="menu-header">게시판</li>
+              <li class="dropdown">
+                <a href="#" class="nav-link has-dropdown"><i class="fas fa-columns"></i> <span>게시판관리</span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/customerCenter/qnaListAdmin.html">1:1문의</a></li> 
+                  <li><a href="#">자주묻는질문</a></li>  
+                </ul>
+              </li>
+            </ul>
+         </aside>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="section-body">
+          <div class="row">
+             <div class="col-lg-10 ftco-animate">
+            <div class="row mt-4">
+              <div class="card-body" style="width: 100%">
+                              <h3 class="blind">USER 구분</h3>
+                <form id="frmSellerChk" th:action="@{/customerCenter/qnaListAdmin.html}">
+                  <div class="radioButtonStyle" role="group" aria-label="Basic radio toggle button group">
+                    <label for="btnradio1" class="radioStyle">
+                        <input value="" type="radio" name="sellerChk" id="btnradio1"  >
+                        <span>전체</span>
+                    </label>
+                    <label for="btnradio2" class="radioStyle">
+                        <input value="0" type="radio" name="sellerChk" id="btnradio2" >
+                        <span>사용자</span>
+                    </label>
+                    <label  for="btnradio3" class="radioStyle">
+                        <input value="1" type="radio"name="sellerChk" id="btnradio3" >
+                        <span>판매자</span>
+                    </label>
+                  </div>
+                </form>
+                <h3 class="blind">1:1 카테고리 구분</h3>
+                <form id="frmKind" th:action="@{/customerCenter/qnaListAdmin.html}">
+                  <div class="radioButtonStyle" role="group" aria-label="Basic radio toggle button group">
+                    <label for="btnradio4" class="radioStyle">
+                        <input value="" type="radio" name="kind" id="btnradio4"  >
+                        <span>전체</span>
+                    </label>
+                    <label for="btnradio5" class="radioStyle">
+                        <input value="상품" type="radio" name="kind" id="btnradio5" >
+                        <span>상품</span>
+                    </label>
+                    <label  for="btnradio6" class="radioStyle">
+                        <input value="배송" type="radio"name="kind" id="btnradio6" >
+                        <span>배송</span>
+                    </label>
+                    <label  for="btnradio7" class="radioStyle">
+                        <input value="회원정보" type="radio"name="kind" id="btnradio7" >
+                        <span>회원정보</span>
+                    </label>
+                    <label  for="btnradio8" class="radioStyle">
+                        <input value="주문/결제" type="radio"name="kind" id="btnradio8" >
+                        <span>주문/결제</span>
+                    </label>
+                    <label  for="btnradio9" class="radioStyle">
+                        <input value="취소" type="radio"name="kind" id="btnradio9" >
+                        <span>취소</span>
+                    </label>
+                  </div>
+                   <div class="radioButtonStyle" role="group" aria-label="Basic radio toggle button group">
+                    <label  for="btnradio10" class="radioStyle">
+                        <input value="교환" type="radio"name="kind" id="btnradio10" >
+                        <span>교환</span>
+                    </label>
+                    <label  for="btnradio11" class="radioStyle">
+                        <input value="반품" type="radio"name="kind" id="btnradio11" >
+                        <span>반품</span>
+                    </label>
+                    <label  for="btnradio12" class="radioStyle">
+                        <input value="환불" type="radio"name="kind" id="btnradio12" >
+                        <span>환불</span>
+                    </label>
+                    <label  for="btnradio13" class="radioStyle">
+                        <input value="서비스" type="radio"name="kind" id="btnradio13" >
+                        <span>서비스</span>
+                    </label>
+                    <label  for="btnradio14" class="radioStyle">
+                        <input value="기타" type="radio"name="kind" id="btnradio14" >
+                        <span>기타</span>
+                    </label>
+                    </div>
+                </form>
+                <div class="float-left">
+                  <select class="form-control selectric" id="recordPerPage">
+                    <option value="10">10개</option>
+                    <option value="20">20개</option>
+                    <option value="30">30개</option>
+                  </select>
+                  <div class="text-left mt-3" id="totalRecord" th:text="|전체 ${totalRecord}개|"></div>
+                </div>
+                <div class="float-right">
+                  <form th:action="@{/customerCenter/qnaList.html}" class="search-form">
+                    <div class="form-group">
+                      <span class="icon ion-ios-search"></span>
+                      <input type="text" class="form-control" placeholder="검색어를 입력하세요." name="query" id="query" >
+                    </div>
+                  </form>
+                </div>
+                <div class="clearfix mb-3" style="table-layout : fixed"></div>
+                <div style="table-layout : fixed;">
+                  <table class="table table-hover"  style="table-layout : fixed;">
+                    <thead>
+                      <tr>
+                        <th>No</th>
+                        <th>Question type</th>
+                        <th>Title</th>
+                        <th>Created At</th>
+                        <th>Hit</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                      <th:block th:if="${#lists.isEmpty(qnaList)}">
+                        <tr>
+                          <th style="pointer-events: none;" scope="row" colspan="6">게시글이 없습니다.</th>
+                        </tr>
+                      </th:block>
+                    <th:block th:if="${not #lists.isEmpty(qnaList)}">
+                      <th:block th:each="qna, vs:${qnaList}" > 
+                        <tr class="btnDedatil" th:data-qna_no="${qna.qnaNo}">
+                          <td th:text="${beginNo - vs.index}"></td>
+                          <td th:text="${qna.qnaCategory}"></td>
+                          <td class="font-weight-normal" th:text="${qna.qnaTitle}"></td>
+                          <td th:text="${#dates.format(qna.qnaCreatedAt, 'yyyy-MM-dd')}"></td>
+                          <td th:text="${qna.qnaHit}"></td>
+                          <th:block th:if="${qna.qnaStatus == 0}">
+                          <td><span class="badge badge-secondary">답변미완료</span></td>
+                          </th:block>
+                           <th:block th:if="${qna.qnaStatus == 1}">
+                          <td><span class="badge badge-success">답변완료</span></td>
+                          </th:block>
+                        </tr>
+                      </th:block>
+                    </th:block>
+                  </table>
+                </div>
+                <nav>
+                  <div class="d-flex justify-content-center">
+                  <div th:utext="${pagination}"></div>
+                  </div>
+                </nav>
+              </div>
+            </div>
+          </div>
+            </div>
+      </div>
+  </div>
+  <div th:replace="~{/admin/adminMain::footerFrag}"></div>
+</body>
+<script th:inline="javascript">
+
+
+
+ // recordPerPage의 변경
+ $('#recordPerPage').on('change', function(){
+   location.href = '/customerCenter/change/record.do?recordPerPage=' + $(this).val();  // session에 recorePerPage 올리기
+ });
+ 
+ // 세션에 저장된 recordPerPage값으로 <select> 태그의 값을 세팅
+ let a = /*[[${session.recordPerPage}]]*/ null;
+ if(a === null){
+   $('#recordPerPage').val(10);
+ } else {
+   $('#recordPerPage').val(a);
+ }
+ 
+ var frm;
+ $(function(){
+   frm = $('#frm');
+ })
+ 
+ function fnRemove(){
+   if(confirm('게시글을 삭제하면 모든 첨부 파일이 함께 삭제됩니다. 그래도 삭제하시겠습니까?') == false){
+     return;
+   }
+   frm.submit();
+ }
+
+ $('.btnDedatil').on('click', function() {
+      location.href = '/customerCenter/qnaDetailAdmin.html?qnaNo=' + $(this).data('qna_no');
+    });
+     
+ 
+ $(function() {
+	    // 라디오 버튼 클릭 이벤트 처리
+	    $('input[name="kind"]').on('click', function fnKindChange() {
+	      var selectedValue = $(this).val(); // 선택한 라디오 버튼의 값
+
+	      // AJAX 요청
+	      $.ajax({
+	        url: '/customerCenter/qnaListAdmin.html?kind=' + $(this).val(),
+	        method: 'GET',
+	        data: { kind: selectedValue },
+	        success: function(response) {
+	          console.log('AJAX 요청 성공');
+	          // 선택한 라디오 버튼에 checked 속성 추가
+	          $('input[name="kind"]').prop('checked', false);
+	          $('input[name="kind"][value="' + selectedValue + '"]').prop('checked', true);
+	        },
+	        error: function(xhr, status, error) {
+	          console.error('AJAX 요청 실패:', error);
+	        }
+	      });
+	    });
+	  });
+	  
+
+</script>
+</html>

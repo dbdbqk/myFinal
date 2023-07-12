@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace는 @Mapper를 지정한다. -->
+<mapper namespace="com.gdu.pupo.mapper.CartMapper">
+  
+  
+<resultMap type="CartItemDTO" id="cartItemMap">
+  <id column="CART_ITEM_ID" property="cartItemId"/>
+  <result column="QUANTITY" property="quantity"/>
+  <association javaType="UserDTO" property="userDTO">
+    <id column="ID"  property="id"/>
+  </association>
+  <association javaType="ItemDTO" property="itemDTO">
+    <id column="ITEM_ID" property="itemId"/>
+    <result column="ITEM_NAME" property="itemName"/>
+    <result column="PRICE" property="price"/>
+  </association>
+</resultMap>
+
+<!-- 장바구니에 상품 추가 -->
+<insert id="addCart" parameterType="CartItemDTO">
+  INSERT INTO CART_LIST (
+    ID
+    , ITEM_ID 
+    , QUANTITY
+  ) VALUES (
+    #{userDTO.id}
+    , #{itemDTO.itemId}
+    , #{quantity}
+  )
+
+</insert>
+
+<!-- 장바구니 조회 -->
+<select id="selectCartList" parameterType="string" resultMap="cartItemMap">
+  SELECT C.CART_ITEM_ID, C.QUANTITY, I.ITEM_NAME, I.PRICE
+    FROM ITEM I INNER JOIN CART_LIST C 
+      ON I.ITEM_ID = C.ITEM_ID
+   WHERE C.ID = #{id} 
+</select>
+   
+<!-- 카트 생성 -->
+<insert id="createCart" parameterType="String">
+  INSERT INTO CART(ID)
+  VALUES (#{ueseId})
+</insert>
+
+<!-- 카트 추가 -->
+<insert id="addItemCart" parameterType="map">
+  INSERT INTO CART_LIST (CART_ID, ITEM_ID, QUANTITY) 
+  VALUES ( (SELECT CART_ID 
+          FROM CART
+         WHERE ID = #{id}))
+</insert>
+
+<!-- 카트 수정 -->
+<update id="updateCartItem" parameterType="map">
+  UPDATE CART_LIST
+     SET QUANTITY = #{quantity}
+   WHERE CART_ITEM_ID = ${cartItemID}
+</update>
+
+<!-- 카트 삭제 -->
+<delete id="deleteCart" parameterType="List">
+  DELETE 
+    FROM CART_LIST
+   <where>
+     <foreach collection="list" item="cartItemId" open="CART_ITEM_ID IN(" separator="," close=")">
+      #{cartItemId}
+     </foreach>
+   </where>
+</delete>
+
+<!-- 카트 조회 -->
+<select id="getCartItemById" parameterType="string" resultType="CartItemDTO">
+  SELECT CL.CART_ITEM_ID, CL.CART_ID, CL.ITEM_ID, CL.QUANTITY, CL.PRICE
+    FROM CART_LIST CL JOIN CART C 
+      ON CL.CART_ID = C.CART_ID
+   WHERE C.ID = #{ID}
+</select>  
+
+
+</mapper>

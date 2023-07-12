@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<!--/*
+  1. Variable Expressions           : ${...} (값을 나타낼 때 사용한다.)
+  2. Selection Variable Expressions : *{...} (객체의 특정 필드 값을 나타낼 때 사용한다.)
+  3. Message Expressions
+  4. Link URL Expressions           : @{...} (경로 작성할 때 사용한다.)
+  5. Fragment Expressions           : ~{...} (조각을 사용할 때 사용한다.)
+*/-->
+
+<!--/*
+  ${name}             : request attribute      model.addAttribute("name", "킹콩")
+                                               redirectAttributes.addFlashAttribute("name", "킹콩")
+  ${param.name}       : request parameter      /board/detail.do?name=킹콩
+  ${session.name}     : session attribute      session.setAttribute("name", "킹콩")
+  ${application.name} : application attribute  servletContext.setAttribute("name", "킹콩")
+*/-->
+
+<!--/* /layout/header.html의 headFrag조각으로 head 태그를 바꾼다. */-->
+<head th:replace="~{/layout/header::headFrag('Welcome')}"></head>
+<style>
+  td{
+      border-bottom: 1px solid #ddd;
+      padding: 8px;
+      height: 30px;
+           }
+  li{
+      list-style: none;
+  }
+  a{
+  text-decoration: none;
+   color: #303030;
+   font-size: 17px;
+  }          
+  .regi_form{
+    margin-top:50px;
+    margin-left: 100px;
+  }
+  #uploadBtn,
+  #resetBtn,
+  #backBtn,
+  #addCategoryBtn {
+      background-color: #8FA691 ; 
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      font-weight: bold;
+      margin: 20px 2px;
+    
+  }
+  #uploadBtn:focus,
+  #resetBtn:focus{
+   outline:none;
+   border: none;
+  }
+  .regi_btn{
+      float: center;
+      margin-right:330px;
+  }
+  .mainContent .title {
+  margin-left: 100px;
+  }
+  .mainContent h3{
+  font-weight:500;
+  font-size:24px;
+  margin-bottom:10px;
+  }
+  .mainContent p{
+      color: #b9b9b9;
+      margin-top:0;
+      
+  }
+   
+     </style>
+<body>
+
+<!--   <form th:action="@{/regular/regularAdd.do}" enctype="multipart/form-data" method="post">
+     <div>
+      <div>상품명<input type="text" name="regularName"></div>
+      <div>간단한 설명 <input type="text" name="regularSimpleDetail"></div>
+      <div>판매가격<input type="text" name="regularSellPrice"></div>/*  정규식으로 숫자만 넣게 하기 필수 입력 값  */
+      <div>매입가격<input type="text" name="regularOriginPrice"></div>/*  정규식으로 숫자만 넣게 하기 필수 입력 값  */
+      <div>재고<input type="text" name="regularStock" placeholder="재고"></div> /*  정규식으로 숫자만 넣게 하기 필수 입력 값  */
+      <div>
+        <label for="regularDisplay">디스플레이</label>
+        <select id="regularDisplay" name="regularDisplay">
+          <option value="1">보여</option>
+          <option value="2">안보여</option>
+        </select>
+      </div>
+      <div>
+      <label for="regularCategory">카테고리</label>
+        <select id="regularCategory" name="regularCategory">
+          <option value="1">샐러드</option>
+          <option value="2">건강식</option>
+        </select>
+      </div>
+      <div>
+        <label for="files">첨부</label>
+        <input type="file" id="files" name="files" multiple="multiple" onchange="fnFileCheck(this)">
+      </div>
+      <div>
+        <label for="regularState">상태</label>
+        <select id="regularState" name="regularState">
+          <option value="1">신상</option>
+          <option value="2">베스트</option>  
+          <option value="3">일반</option>
+        </select>
+      </div>
+     </div> 
+     <button>작성완료</button>
+     <input type="button" value="작성초기화" onclick="fnCancle()">
+  </form> -->
+
+
+<div class="mainContent" style="margin-top:50px; margin-left:200px;">
+  <div class="title">
+    <h3>정기상품 수정</h3>
+  </div>
+  <div class="regi_form">
+    <form th:action="@{/admin/regularEdit.do}" enctype="multipart/form-data" method="post">
+    <input type="hidden" name="regularNo" id="regularNo" th:value="${regularProductDTO.regularNo}" />
+      <table>
+        <tr>
+          <td>
+            <label for=""><i class="fa fa-chevron-right"></i>상품 분류</label><br>
+          </td>
+          <td>                                    
+            <select id="regularCategory" name="regularCategory">
+              <option th:each="category : ${category}" th:value="${category.regularCategory}" th:text="${category.regularCategoryName}"></option>
+            </select>
+          </td>
+        </tr>
+
+        <tr>
+          <td><label for="regularName"><i class="fa fa-chevron-right"></i>상품명</label></td>
+          <td><input type="text" name="regularName" id="regularName" placeholder="상품명을 입력하세요." style="width: 350px;" th:value="${regularProductDTO.regularName}"></td>
+        </tr>
+
+        <tr>
+          <td>
+            <label for="regularSimpleDetail"><i class="fa fa-chevron-right"></i>상품 상세정보</label><br>
+          </td>
+          <td>
+            <textarea name="regularSimpleDetail" id="regularSimpleDetail" style="height: 200px; width:350px; resize:none;" th:text="${regularProductDTO.regularSimpleDetail}"></textarea>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <small style="opacity:0.75;">가격은 1,000원 ~ 1,000,000원 까지만 허용합니다.</small><br><br>          
+            <label for="regularSellPrice"><i class="fa fa-chevron-right"></i>판매가격</label>
+          </td>
+          <td>
+            <input type="text" name="regularSellPrice" id="regularSellPrice" th:value="${regularProductDTO.regularSellPrice}" numberOnly><br>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <label for="regularOriginPrice"><i class="fa fa-chevron-right"></i>매입가격</label>
+          </td>
+          <td>
+            <input type="text" name="regularOriginPrice" id="regularOriginPrice" th:value="${regularProductDTO.regularOriginPrice}" numberOnly >
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <label for=""><i class="fa fa-chevron-right"></i>진열상태</label>
+          </td>
+          <td>
+            <label for="regularDisplay1">
+              <input type="radio" name="regularDisplay" value="1" id="regularDisplay1" checked="checked">진열함
+            </label> 
+            <label for="regularDisplay2">
+              <input type="radio" name="regularDisplay" value="2" id="regularDisplay2">진열안함<br>
+            </label> 
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label><i class="fa fa-chevron-right"></i>상품 특성</label><br>
+          </td>
+          <td>
+            <label for="regularState1">
+              <input type="radio" name="regularState" id="regularState1" value="1" >신상  
+            </label>
+            <label for="regularState2">
+              <input type="radio" name="regularState" id="regularState2" value="2">베스트
+            </label>
+            <label for="regularState3">
+              <input type="radio" name="regularState" id="regularState3" value="3" checked="checked">기본
+            </label>            
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <label><i class="fa fa-chevron-right"></i>메인 이미지</label>
+          </td>
+          <td>
+            <input type='file' id="itemImg1" name="mainImg" multiple="multiple" accept="image/gif, image/jpeg, image/png, image/jpg"/>
+            <div class="select_img1"><img th:src="@{/regular/regularMainDisplay.do(regularNo=${regularProductDTO.regularNo})}" /></div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <label><i class="fa fa-chevron-right"></i>상품 상세 설명 이미지</label>
+          </td>
+          <td>
+            <input type='file' id="itemImg2" name="files" multiple="multiple" accept="image/gif, image/jpeg, image/png, image/jpg"/>
+            <div class="select_img2"><img th:src="@{/regular/regularDetailDisplay.do(regularNo=${regularProductDTO.regularNo})}" /></div>
+          </td>
+        </tr>
+      </table> 
+
+      <div class="regi_btn">
+        <button id="uploadBtn">상품수정</button>
+        <button id="resetBtn" type="reset">Reset Button</button>
+<!--         <button id="addCategoryBtn" type="button" onclick="openCategoryPopup()">상품분류 추가</button> -->
+        <button id="backBtn" type="button" onclick="fnList()">돌아가기</button>
+      </div>
+    </form>
+   <form id="frmCategory" action="/regular/addCategory.do" method="post">
+     <div id="categoryPopup" style="display: none;">
+        <input type="text" name="regularCategoryName" id="categoryInput" placeholder="상품분류 입력">
+        <button type="button" onclick="saveCategory()">저장</button>
+        <button type="button" onclick="closeCategoryPopup()">취소</button>
+      </div>
+   </form>
+  </div>
+</div>
+
+</body>
+  <script th:inline="javascript">
+  $(document).ready(function() {
+	     var regularProductDTO = /*[[ ${regularProductDTO} ]]*/ null;
+	     if(regularProductDTO.regularDisplay == "1"){
+             $('input:radio[name="regularDisplay"][value="1"]').prop('checked', true);
+	     } else {
+             $('input:radio[name="regularDisplay"][value="2"]').prop('checked', true);
+	     }
+
+	     if(regularProductDTO.regularState == "1"){
+             $('input:radio[name="regularState"][value="1"]').prop('checked', true);
+	     } else if(regularProductDTO.regularState == "2"){
+             $('input:radio[name="regularState"][value="2"]').prop('checked', true);
+	     } else if(regularProductDTO.regularState == "3"){
+             $('input:radio[name="regularState"][value="3"]').prop('checked', true);
+	     }
+  });
+  
+  
+  // 상품분류 입력 창 열기
+  function openCategoryPopup() {
+      // 팝업 창 열기
+      document.getElementById("categoryPopup").style.display = "block";
+    }
+  $('#categoryInput').on('keydown', function(event) {
+    if (event.keyCode === 13) {
+      event.preventDefault(); // 기본 동작 중지
+
+      saveCategory();
+    }
+  });
+
+  function saveCategory() {
+    // 상품분류 저장 처리
+    var newCategory = $('#categoryInput').val();
+
+    // 중복 체크
+    var options = $('#regularCategory').find("option");
+    for (var i = 0; i < options.length; i++) {
+      if ($(options[i]).text() === newCategory || newCategory === null || newCategory.trim() === '') {
+        alert('중복된 카테고리 또는 공백 입니다. 다시 입력 해주세요.');
+        return; // 서브밋 취소
+      }
+    }
+
+    $('#frmCategory').submit();
+
+    // 팝업 창 닫기
+    document.getElementById("categoryPopup").style.display = "none";
+  }
+    function closeCategoryPopup() {
+        // 팝업 창 닫기
+        document.getElementById("categoryPopup").style.display = "none";
+      }
+  function fnList(){
+    location.href="/admin/regularList.html";
+  }
+    function checkExtension(fileType, fileSize) {
+      var maxSize = 1024 * 1024 * 10;
+      if(fileSize >= maxSize) {
+         alert("파일 사이즈 초과");
+         return false;
+      }
+      
+      if(!regex.test(fileType)) {
+         alert("이미지만 업로드 가능합니다!");
+         
+         return false;
+      }
+      return true;
+    }
+        
+    // 이미지 체크
+    for(let i=1; i<=2; i++) {
+        $("#itemImg"+i).change(function(){   
+           var imgFile = $('#itemImg'+i).val();
+           var fileSize = document.getElementById("itemImg"+i).files[0].size;
+          if(!checkExtension(imgFile, fileSize)) {
+             $('#itemImg'+i).val("");
+             $(".select_img"+i+" img").attr("src", "");
+             return false;
+          }
+        });
+        
+    }        
+  /* 상품 이미지 미리보기 */
+    for(let i=1; i<=2; i++) {
+      $("#itemImg"+i).change(function(){   
+        if(this.files && this.files[0]) {
+           var reader = new FileReader;
+           reader.onload = function(data) {
+               $(".select_img"+i+" img").attr("src", data.target.result).width(500);
+            }
+            reader.readAsDataURL(this.files[0]);
+        }
+     });
+    }      
+      
+    
+    /* 정규식 */
+    var regex = new RegExp("(.*?)\.(jpg|jpeg|png|gif|PNG|JPG)$");  
+    $("#uploadBtn").on("click", function(e) {
+      
+      /* 최종 업로드에 숫자에 콤마 삭제 */  
+      function removeComma(str){
+        n = str.replace(/,/g,"");
+        return n;
+      }
+       
+        if(!$('#regularCategory > option:selected').val()) {
+           alert("상품분류가 선택되지 않았습니다.");
+           $('#regularCategory').focus();
+           return false;
+       }else if($('#regularName').val()=='' || $('#regularName').val().trim() == '') {
+          alert('상품명이 입력되지 않았습니다.');
+          $('#regularName').focus();
+          return false;
+       }else if($('#regularSimpleDetail').val()=='' || $('#regularSimpleDetail').val().trim() == ''){
+          alert('상품 상세 정보가 입력되지 않았습니다.');
+          $('#regularSimpleDetail').focus();
+          return false;
+       }else if($('#regularSellPrice').val()=='' || removeComma($('#regularSellPrice').val()) < 1000 || removeComma($('#regularSellPrice').val()) > 1000000){
+          alert('유효하지 않은 판매가 입니다.');
+          $('#regularSellPrice').focus();
+          return false;
+       }else if($('#regularOriginPrice').val()=='' || removeComma($('#regularOriginPrice').val()) < 1000 || removeComma($('#regularOriginPrice').val()) > 1000000){
+          alert('유효하지 않은 정상가 입니다.');
+          $('#regularOriginPrice').focus();
+          return false;
+       }else if($("#itemImg1").val() == "") {
+          alert("메인 이미지가 첨부되어 있지 않습니다.");
+          $("#itemImg1").focus();
+          return false;
+       }else if($("#itemImg2").val() == "") {
+          alert("상품 상세 이미지가 첨부되어 있지 않습니다.");
+          $("#itemImg2").focus();
+          return false;
+       }
+        
+       $('#regularSellPrice').val(removeComma($('#regularSellPrice').val()));
+       $('#regularOriginPrice').val(removeComma($('#regularOriginPrice').val()));
+       
+       $("form").submit();
+    });  
+  
+    //3자리 단위마다 콤마 생성
+    function addCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+     
+    //모든 콤마 제거
+    function removeCommas(x) {
+        if(!x || x.length == 0) return "";
+        else return x.split(",").join("");
+    }
+    // 숫자만 입력
+    $("input:text[numberOnly]").on("focus", function() {
+        var x = $(this).val();
+        x = removeCommas(x);
+        $(this).val(x);
+    }).on("focusout", function() {
+        var x = $(this).val();
+        if(x && x.length > 0) {
+            if(!$.isNumeric(x)) {
+                x = x.replace(/[^0-9]/g,"");
+            }
+            x = addCommas(x);
+            $(this).val(x);
+        }
+    }).on("keyup", function() {
+        $(this).val($(this).val().replace(/[^0-9]/g,""));
+    });  
+    
+    // 리셋 버튼 누르면 보이는 이미지도 삭제 되게끔
+    $("#resetBtn").on("click", function(e) {
+       for(let i=1; i<=2; i++) {
+           $(".select_img"+i+" img").attr("src", "");
+        }
+    });
+  </script>
+</body>
+
+</html>

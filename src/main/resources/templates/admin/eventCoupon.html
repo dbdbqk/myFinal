@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<!-- 아이콘 -->
+<link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+ <!-- 제이쿼리 ui css -->
+ <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+ <!-- 제이쿼리 style css -->
+ <link rel="stylesheet" href="/resources/demos/style.css">
+<!--  제이쿼리 js -->
+ <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<!-- 제이쿼리 ui js -->
+ <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<meta charset="UTF-8">
+ <title>관리자: 쿠폰생성</title>
+  <style>
+  .coupon-List {
+    text-align: center;
+    border: 1px solid #444444;
+    padding: 10px;
+  }
+    table {
+      border-collapse: collapse;
+      border-top: 1px solid #444444;
+      border-bottom: 1px solid #444444;
+      width: 100%;
+    }
+    th, td {
+      text-align: left;
+      padding: 2px;
+      border-bottom: 1px solid #444444;
+    }
+    th {
+      background-color: #CBFF75;
+    }
+    tr:not(:first-child):not(:last-child) {
+      border-top: none;
+      border-bottom: none;
+      background-color: transparent;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    div {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    tr:first-child th,
+    tr:first-child td {
+      /* Apply background color to the first row only */
+      background-color: #CBFF75;
+    }
+     .fa-tag {
+      margin-right: 10px;
+    }
+    .container-fluid {
+      margin: 0 auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      width: 500px;
+      height: 300px;
+    }
+    
+    .form-control {
+  width: 300px;
+}
+#couponSale {
+  width: 60px;
+}
+
+#datepicker1 {
+   width: 90px; 
+}
+#datepicker2 {
+   width: 90px; 
+}
+  </style>
+ <script>
+ function fnGetCoupon() {
+	    $('#GetCoupon').on('submit', function(event) {
+	        var couponName = $('#couponName').val();
+	    });
+	}
+		    
+	// 호출	    
+	$(function() {
+	    fnGetCoupon();
+	});
+
+</script>
+
+
+</head>
+<body>
+
+	<div class="container-fluid" id="container-wrapper">
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="h3 mb-0 text-gray-800">쿠폰발급</h1>
+		</div>
+
+		<!-- row -->
+		<div class="row">
+			<div class="col-lg-6">
+				<div class="card mb-4">
+					<div class="card-header py-3">
+					</div>
+					<div class="card-body">
+						<form id="GetCoupon" method="post" th:action="@{/admin/eventCoupon.do}">				
+							<input type="hidden" id="couponId" name="id" value="0">
+    						<div class="text-right">
+    						    						    
+						    <h1><i class="fa fa-image"></i>웰컴이미지</h1>
+    							<button class="btn btn-success mb-1" >쿠폰발급받기</button>
+    						</div>
+							
+							 <div class="coupon-List">
+                        	   <a th:href="@{/index.do}" class="coupon-List-link">메인페이지로가기</a>
+                        	   <label for="couponList"></label>
+                        	 </div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-6">
+				<div class="card mb-4">
+					<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+					</div>
+					<div class="table-responsive p-3">
+					
+						<table class="ui celled table" style="width:100%" id="couponTable">
+							<thead class="thead-light">
+
+							</thead>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+  <script>
+  </script>
+</body>
+</html>

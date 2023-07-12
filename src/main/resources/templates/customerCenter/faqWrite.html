@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<style>
+.fnRowButton {
+cursor: pointer;
+}
+</style>
+<!--/* /layout/header.html의 headFrag조각으로 head 태그를 바꾼다. */-->
+<head th:replace="~{/layout/header::headFrag('고객센터')}"></head>
+<div th:replace="~{/layout/header::gnbFrag}"></div>
+  
+<body class="goto-here">
+  <div class="ftco-section">
+    <div class="container">
+      <header> 
+        <div class="nav navbar">
+          <div class="row section-header-breadcrumb ftco-animate">
+            <div class="breadcrumb-item active"><a th:href="@{/}">HOME</a></div>
+            <div class="breadcrumb-item"><a th:href="@{/customerCenter/centerHome.html}">고객센터</a></div>
+            <div class="breadcrumb-item">All Posts</div>
+          </div>
+        </div>
+        <h1 class="ftco-animate text-center font-weight-bold pt-5">자주묻는질문 작성 관리자 페이지</h1>
+      </header>
+      <section>
+        <div class="row aline-items-center">
+          <div class="col-lg-2 ftco-animate">
+            <div class=" ftco-animate mt-5">
+              <h3 class="heading blind">카테고리</h3>
+                <ul class="categories">
+                  <li><a th:href="@{/customerCenter/notice.html}">공지사항</a></li>
+                  <li><a th:href="@{/customerCenter/faq.html}">자주 묻는 질문</a></li>
+                  <li><a th:href="@{/customerCenter/qna.html}">1:1문의</a></li>
+                  <li><a th:href="@{/customerCenter/voc.html}">고객의 소리</a></li>
+                </ul>
+            </div>
+            <div class=" ftco-animate mt-5">
+              <h4 class="heading">고객센터</h4>
+              <p><strong>7777-7777</strong><br>평일, 토요일 7:00~18:00<br>공휴일 7시 ~ 13시 <br>(일요일 휴무)</p>
+            </div>
+          </div>
+          <div class="col-lg-10 ftco-animate">
+            <div class="row mt-4">
+              <div class="card-body" style="width: 100%">
+                <div class="comment-form-wrap pt-5 ">
+                <form id="formAction" method="post" th:action="@{/customerCenter/faqAdd.do}" class="p-6 bg-white">
+                  <div class="form-group search-form">
+                    <label for="faqTitle">제목</label>
+                    <input name="faqTitle" class="form-control" id="faqTitle">
+                  </div>
+                  <div class="form-group row mb-4">
+                          <label for="noticeCategory" class="col-form-label col-12 col-md-3 col-lg-3">카테고리</label>
+                          <div class="col-sm-12 col-md-12">
+                            <select name="faqCategory" id="faqCategory"  required="required" class="form-control selectric">
+                              <option value="" style="display: none;" disabled selected hidden>카테고리를 선택하세요</option>
+                              <option value="상품">상품</option>
+                              <option value="배송">배송</option>
+                              <option value="회원정보">회원정보</option>
+                              <option value="주문/결제">주문/결제</option>
+                              <option value="취소/교환/반품">취소/교환/반품</option>
+                            </select>
+                          </div>
+                        </div>
+                  <div class="form-group">
+                    <label for="faqContent">내용</label>
+                    <textarea  id="faqContent" name="faqContent" cols="30" rows="10" class="form-control"></textarea>
+                  </div>
+                    <div class="form-group row mb-4">
+                          <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
+                          <div class="col-sm-12 col-md-7 ftco-animate">
+                          <input type="hidden" name="faqNo">
+                            <button class="btn btn-primary">작성완료</button>
+                            <input class="btn btn-primary" type="reset" value="입력초기화">
+                            <input class="btn btn-primary"  type="button" th:value="목록" onclick="fnList()">
+                          </div>
+                        </div>
+                </form>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div th:replace="~{/layout/footer::gnbFooter}"></div> 
+</body>
+<script th:inline="javascript">
+function fnList() {
+    location.href = '/customerCenter/faq.html';
+  }
+
+
+
+</script>
+</html>

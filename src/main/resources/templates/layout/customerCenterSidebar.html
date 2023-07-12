@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <!--/* /layout/header.html의 headFrag조각으로 head 태그를 바꾼다. */-->
+<head th:replace="~{/layout/header::headFrag('Welcome')}"></head>
+
+
+  <!--/* /layout/header.html의 gnbFrag조각으로 div 태그를 바꾼다. */-->
+  <div th:replace="~{/layout/header::gnbFrag}"></div>
+  
+  <body class="goto-here">
+  
+   <header> 
+  <nav aria-label="breadcrumb" class="navbar-white bg-white">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="#">home</a></li>
+    <li class="breadcrumb-item"><a href="#">고객센터</a></li>
+  </ol>
+</nav>
+<h1 class="text-center font-weight-bold pt-5">자주 묻는 질문</h1>
+    </header>
+    <h3 style="display:none;">서브메뉴</h3>
+        <ul>
+            <li id="notice">
+            <a th:href="@{/customerCenter/notice.html}">공지사항</a>
+            </li>
+            <li id="faq">
+            <a th:href="@{/customerCenter/faq.html}">자주 묻는 질문</a>
+            </li>
+            <li id="myPersonalInquery">
+            <a href="@{/customerCenter/qna.html}">1:1 문의</a>
+            </li>
+            <li id="qna">
+            <a th:href="@{/customerCenter/faq.html}">고객의 소리</a>
+            </li>
+        </ul>
+  
+  
+  </div>
+  </section>
+
+ <div th:fragment="gnbScript">
+  
+  </div>
+
+</body>
+</html>

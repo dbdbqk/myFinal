@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace는 @Mapper를 지정한다. -->
+<mapper namespace="com.gdu.pupo.mapper.CategoryMapper">
+
+<!-- 카테고리 등록 -->
+<insert id="insertCategory" useGeneratedKeys="true" keyProperty="categoryId" parameterType="CategoryDTO">
+  INSERT INTO CATEGORY(CATEGORY_NAME)
+  VALUES (#{categoryName})
+</insert>
+
+
+
+
+</mapper>

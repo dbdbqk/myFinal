@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<style>
+.fnNextButton {
+cursor: pointer;
+}
+.fnPrevButton {
+cursor: pointer;
+}
+</style>
+<!--/* /layout/header.html의 headFrag조각으로 head 태그를 바꾼다. */-->
+<head th:replace="~{/layout/header::headFrag('고객센터')}"></head>
+<div th:replace="~{/layout/header::gnbFrag}"></div>
+  
+<body class="goto-here">
+  <div class="ftco-section">
+    <div class="container">
+      <header> 
+        <div class="nav navbar">
+          <div class="row section-header-breadcrumb">
+            <div class="breadcrumb-item"><a th:href="@{/}">HOME</a></div>
+            <div class="breadcrumb-item"><a th:href="@{/customerCenter/centerHome.html}">고객센터</a></div>
+            <div class="breadcrumb-item">공지사항</div>
+          </div>
+        </div>
+        <h1 class="ftco-animate text-center font-weight-bold pt-5">공지사항</h1>
+      </header>
+      <section>
+        <div class="row aline-items-center">
+          <div class="col-lg-2 ftco-animate">
+            <div class=" ftco-animate mt-5">
+              <h3 class="heading blind">카테고리</h3>
+                <ul class="categories">
+                  <li><a th:href="@{/customerCenter/notice.html}">공지사항</a></li>
+                  <li><a th:href="@{/customerCenter/faq.html}">자주 묻는 질문</a></li>
+                  <li><a th:href="@{/customerCenter/qna.html}">1:1문의</a></li>
+                  <li><a th:href="@{/customerCenter/voc.html}">고객의 소리</a></li>
+                </ul>
+            </div>
+            <div class=" ftco-animate mt-5">
+              <h4 class="heading">고객센터</h4>
+              <p><strong>7777-7777</strong><br>평일, 토요일 7:00~18:00<br>공휴일 7시 ~ 13시 <br>(일요일 휴무)</p>
+            </div>
+          </div>
+          <div class="col-lg-10 ftco-animate">
+            <div class="row mt-4">
+              <div class="card-body" style="width: 100%">
+                <div class="row">
+                </div>
+                <div class="clearfix mb-3" style="table-layout : fixed"></div>
+                <div style="table-layout : fixed;">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th style="width: 10%;"  scope="row" th:text="|[${noticeDetail.noticeCategory}]|"></th>
+                        <th style="width: 70%;" class="text-left text-border" scope="row" colspan="4" th:text="${noticeDetail.noticeTitle}"></th>
+                        <th style="width: 20%;" class="text-center" scope="row" th:text="${#dates.format(noticeDetail.noticeCreatedAt, 'yyyy-MM-dd')}"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                          <th scope="row" colspan="6">
+                            <th:block th:if="${#lists.isEmpty(noticeAttachList)}">
+                              <div class="text-right">첨부파일이 없습니다.</div>
+                            </th:block>
+                            <th:block th:if="${not #lists.isEmpty(noticeAttachList)}">
+                              <th:block th:each="noticeAttach, vs:${noticeAttachList}" > 
+                                <div class="text-right">
+                                  <a th:href="@{/customerCenter/noticeDownload.do(attachNo=${noticeAttach.attachNo})}" th:text="${noticeAttach.originName}">
+                                  </a>
+                                </div>
+                                <div>
+                                  <th:block th:if="${noticeAttach.hasThumbnail == 1}">
+                                      <img th:src="@{/customerCenter/noticeDisplay.do(attachNo=${noticeAttach.attachNo})}">
+                                    </th:block>
+                                    <th:block th:if="${noticeAttach.hasThumbnail == 0}">
+                                      <img th:src="@{/resources/images/attach1.png}" width="50px">
+                                    </th:block>
+                                </div>
+                              </th:block>
+                            </th:block>
+                                <div class="mt-5 mb-5 ml-5 text-left" th:text="${noticeDetail.noticeContent}">
+                                </div>
+                          </th>
+                        </tr>
+                      </tbody>
+                    <tfoot>
+                      <th:block th:if="${nextArticle != null}">
+                        <tr class="fnNextButton" th:data-next_notice_no="${nextArticle.noticeNo}">
+                          <td style="width: 10%;"  scope="row" th:text="[다음글]"></td>
+                          <td style="width: 70%;" class="text-left text-border" scope="row" colspan="4" th:text="${nextArticle.noticeTitle}"></td>
+                          <td style="width: 20%;" class="text-center" scope="row"  th:text="${#dates.format(nextArticle.noticeCreatedAt, 'yyyy-MM-dd')}"></td>
+                        </tr>
+                      </th:block>
+                      <th:block th:if="${nextArticle == null}">
+                        <tr  style="-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none">
+                          <td style="width: 10%;"  scope="row" th:text="[다음글]"></td>
+                          <td style="width: 70%;" class="text-left text-border" scope="row" colspan="5" >다음글이 존재하지 않습니다.</td>
+                        </tr>
+                      </th:block>
+                      <th:block th:if="${prevArticle != null}">
+                        <tr class="fnPrevButton" th:data-prev_notice_no="${prevArticle.noticeNo}">
+                          <td style="width: 10%;"  scope="row" th:text="[이전글]"></td>
+                          <td style="width: 70%;" class="text-left text-border" scope="row" colspan="4" th:text="${prevArticle.noticeTitle}"></td>
+                          <td style="width: 20%;" class="text-center" scope="row"  th:text="${#dates.format(prevArticle.noticeCreatedAt, 'yyyy-MM-dd')}"></td>
+                        </tr>
+                      </th:block>
+                      <th:block th:if="${prevArticle == null}">
+                        <tr  style="-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none">
+                          <td style="width: 10%;"  scope="row" th:text="[이전글]"></td>
+                          <td style="width: 70%;" class="text-left text-border" scope="row" colspan="5" >이전글이 존재하지 않습니다.</td>
+                        </tr>
+                      </th:block>
+                        <tr>
+                        <td class="text-border" scope="row" colspan="6" >
+                         <div>
+                           <a class="nav-link float-right" th:href="@{/customerCenter/notice.html}" th:text="목록"></a>
+                        </div>
+                        </td>
+                        </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>     
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div th:replace="~{/layout/footer::gnbFooter}"></div> 
+</body>
+<script th:inline="javascript">
+$('.fnNextButton').on('click', function() {
+    location.href = '/customerCenter/noticeDetail.html?noticeNo=' + $(this).data('next_notice_no');
+  });
+  
+$('.fnPrevButton').on('click', function() {
+    location.href = '/customerCenter/noticeDetail.html?noticeNo=' + $(this).data('prev_notice_no');
+  });
+
+</script>
+</html>

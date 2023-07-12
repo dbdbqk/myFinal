@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/admin/adminMain::headFrag('관리자')}"></head>
+
+<div th:replace="~{/admin/adminMain::topFrag}"></div>
+
+<div th:replace="~{/admin/adminMain::sideFrag}"></div> 
+ <!-- 제이쿼리 ui css -->
+ <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<!-- 제이쿼리 ui js -->
+ <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<meta charset="UTF-8">
+ <title></title>
+  <style>
+    table {
+      border-collapse: collapse;
+      border-top: 1px solid #444444;
+      border-bottom: 1px solid #444444;
+      width: 100%;
+    }
+    th, td {
+      text-align: left;
+      padding: 2px;
+      border-bottom: 1px solid #444444;
+    }
+    th {
+      background-color: #CBFF75;
+    }
+    tr:not(:first-child):not(:last-child) {
+      border-top: none;
+      border-bottom: none;
+      background-color: transparent;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    tr:first-child th,
+    tr:first-child td {
+      /* Apply background color to the first row only */
+      background-color: #CBFF75;
+    }
+     .fa-tag {
+      margin-right: 10px;
+    } 
+  </style>
+  <script>
+
+ $.datepicker.setDefaults({
+     dateFormat: 'yy-mm-dd',
+     prevText: '이전 달',
+     nextText: '다음 달',
+     monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+     monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+     dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+     dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+     dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+     showMonthAfterYear: true,
+     yearSuffix: '년'
+ });
+
+	$(function() {
+	    $("#datepicker1").datepicker();
+	    $("#datepicker2").datepicker();
+	});
+
+	$("#clearBtn").click(function() {
+		formClear();
+	});
+
+    // 상품 삭제
+  function couponDelete(button) {
+    event.preventDefault(); // 기본 동작 중지(삭제 후 원래페이지로)
+    var couponDelete = confirm("정말로 삭제하시겠습니까?");
+    if (couponDelete) {
+      // 삭제 작업 수행
+      var row = button.parentNode.parentNode;
+      var couponNo = row.querySelector("td:nth-child(1)").innerText; //상품번호
+          $.ajax({
+              type: 'post',
+              url: '/admin/delCoupon.do',
+              data: {
+            	  couponNo: couponNo
+              },
+              dataType: 'json',
+              success: function(resData) {
+                if(resData.delYn == 1) {
+                  alert(couponNo+"번 쿠폰이 삭제되었습니다.");
+                  location.reload(); 
+                } else {
+                  alert(couponNo+"번 쿠폰 삭제에 실패하였습니다.");
+                }
+              }
+            });
+    }
+  }
+</script>
+
+
+</head>
+<body>
+	  <div class="card-body">
+    <div id="app">
+      <div class="main-wrapper main-wrapper-1">
+        <!-- Main Content -->
+        <div class="main-content">
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>쿠폰관리</h4>
+                                    <div class="card-header-form"></div>
+                </div>
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+    <tr>
+      <th>쿠폰번호</th>
+      <th>쿠폰명</th>
+      <th>할인(%)</th>
+      <th>쿠폰 시작일</th>
+      <th>쿠폰 만료일</th>
+      <th>쿠폰 유효 여부</th>
+      <th>삭제</th>
+      
+      <tr th:each="coupon : ${coupon}">
+      <td th:text="${coupon.couponNo}"></td>
+      <td th:text="${coupon.couponName}"></td>
+      <td th:text="${coupon.couponSale} + ' %'" ></td>
+      <td th:text="${coupon.couponBeginAt}"></td>
+      <td th:text="${coupon.couponEndAt}"></td>
+      <td th:text="${coupon.couponUse == 0 ? '사용불가' : (coupon.couponUse == 1 ? '사용가능' : '')}"></td>
+      <td><button type="button" onclick="couponDelete(this)">삭제</button></td>
+  </table>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  
+  <div th:replace="~{/admin/adminMain::footerFrag}"></div>
+</body>
+</html>

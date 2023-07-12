@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace는 @Mapper를 지정한다. -->
+<mapper namespace="com.gdu.pupo.mapper.AdminMapper">
+
+
+<!-- 회원 조회 -->
+  <select id="selectUserByUserListDTO" resultType="UserDTO">
+	SELECT USER_NO
+		, ID
+		, PW
+		, NAME
+		, GENDER
+		, EMAIL
+		, MOBILE
+		, BIRTHYEAR
+		, BIRTHDATE
+		, POSTCODE
+		, ROAD_ADDRESS
+		, JIBUN_ADDRESS
+		, DETAIL_ADDRESS
+		, EXTRA_ADDRESS
+		, AGREECODE
+		, DATE_FORMAT(JOINED_AT, '%Y-%m-%d %H:%i:%s') AS JOINED_AT
+		, PW_MODIFIED_AT
+		, AUTOLOGIN_ID
+		, AUTOLOGIN_EXPIRED_AT
+		, SELLER_CHECK
+		, POINT
+		, GRADE
+	FROM USER_T;
+  </select>
+  
+<!-- 회원 count -->
+	<select id="selectUserCount" resultType="int">
+	  SELECT COUNT(SELLER_CHECK)
+	  FROM USER_T
+	  WHERE SELLER_CHECK = 0
+
+	</select>
+	<select id="selectSellerCount" resultType="int">
+	  SELECT COUNT(SELLER_CHECK)
+	  FROM USER_T
+  	  WHERE SELLER_CHECK = 1
+	</select>
+	<!-- 회원 가입일 정렬 아직안함 -->
+	
+    <select id="getListCount" resultType="int">
+	    SELECT COUNT(*)
+	      FROM USER_T
+  	</select>
+	  
+	 <resultMap id="regPurchaseMap" type="RegularPurchaseDTO">
+	 <id column="REG_PURCHASE_NO" property="regPurchaseNo"/>
+   <result property="regPayStatus" column="REG_PAY_STATUS" />
+	  <association javaType="UserDTO" property="userDTO">
+		  <id property="userNo" column="USER_NO" />
+		  <result property="id" column="ID" />
+		  <result property="pw" column="PW" />
+		  <result property="name" column="NAME" />
+		  <result property="gender" column="GENDER" />
+		  <result property="email" column="EMAIL" />
+		  <result property="mobile" column="MOBILE" />
+		  <result property="birthyear" column="BIRTHYEAR" />
+		  <result property="birthdate" column="BIRTHDATE" />
+		  <result property="postcode" column="POSTCODE" />
+		  <result property="roadAddress" column="ROAD_ADDRESS" />
+		  <result property="jibunAddress" column="JIBUN_ADDRESS" />
+		  <result property="detailAddress" column="DETAIL_ADDRESS" />
+		  <result property="extraAddress" column="EXTRA_ADDRESS" />
+		  <result property="agreecode" column="AGREECODE" />
+		  <result property="joinedAt" column="JOINED_AT" />
+		  <result property="pwModifiedAt" column="PW_MODIFIED_AT" />
+		  <result property="autologinId" column="AUTOLOGIN_ID" />
+		  <result property="autologinExpiredAt" column="AUTOLOGIN_EXPIRED_AT" />
+		  <result property="sellerCheck" column="SELLER_CHECK" />
+		  <result property="point" column="POINT" />
+		  <result property="grade" column="GRADE" />
+	  </association>
+	</resultMap>
+  
+	<!-- 회원 조회 페이지네이션 -->
+  
+  <select id="getlistUsingPagination" parameterType="Map" resultMap="regPurchaseMap">
+		SELECT
+		    U.USER_NO,
+		    U.ID,
+		    U.PW,
+		    U.NAME,
+		    U.GENDER,
+		    U.EMAIL,
+		    U.MOBILE,
+		    U.BIRTHYEAR,
+		    U.BIRTHDATE,
+		    U.POSTCODE,
+		    U.ROAD_ADDRESS,
+		    U.JIBUN_ADDRESS,
+		    U.DETAIL_ADDRESS,
+		    U.EXTRA_ADDRESS,
+		    U.AGREECODE,
+		    U.JOINED_AT,
+		    U.PW_MODIFIED_AT,
+		    U.AUTOLOGIN_ID,
+		    U.AUTOLOGIN_EXPIRED_AT,
+		    U.SELLER_CHECK,
+		    U.POINT,
+		    U.GRADE,  
+      (SELECT REG_PAY_STATUS
+        FROM REGULAR_PURCHASE_T P
+        WHERE U.ID = P.ID
+        LIMIT 1) AS REG_PAY_STATUS
+		  FROM USER_T U
+		ORDER BY U.USER_NO ASC
+		LIMIT #{begin}, #{recordPerPage}
+  </select>
+  
+    <select id="getListCountRegular" resultType="int">
+	    SELECT COUNT(*)
+	      FROM REGULAR_PRODUCT_T 
+  	</select>
+ 
+  <!-- 구독상품 페이지네이션 -->
+<select id="getRegularListPagination" parameterType="Map" resultType="RegularProductDTO">
+    SELECT    
+        A.REGULAR_NO,
+        A.REGULAR_NAME,
+        A.REGULAR_SELL_PRICE,
+        A.REGULAR_ORIGIN_PRICE,
+        A.REGULAR_DISPLAY,
+        A.REGULAR_STOCK,
+        A.REGULAR_CATEGORY,
+        B.REGULAR_CATEGORY_NAME,
+        A.REGULAR_STATE,
+        A.REGULAR_SIMPLE_DETAIL
+    FROM
+        REGULAR_PRODUCT_T A
+        LEFT JOIN REGULAR_CATEGORY_T B ON A.REGULAR_CATEGORY = B.REGULAR_CATEGORY
+    ORDER BY
+        A.REGULAR_NO ASC
+    LIMIT ${begin}, ${end}
+</select>
+
+ 	
+ 	<!-- 정기상품 삭제 -->
+ 	<delete id="deleteRegularProduct" parameterType="RegularProductDTO">
+DELETE
+  FROM REGULAR_PRODUCT_T
+ WHERE REGULAR_NO = #{regularNo};
+ 	</delete>
+ 	
+    <select id="selectRegularProduct" parameterType="int" resultType="RegularProductDTO">
+		SELECT   
+			A.REGULAR_NO,
+		    A.REGULAR_NAME,
+		    A.REGULAR_SELL_PRICE,
+		    A.REGULAR_ORIGIN_PRICE,
+		    A.REGULAR_DISPLAY,
+		    A.REGULAR_STOCK,
+		    A.REGULAR_CATEGORY,
+		    A.REGULAR_STATE,
+		    A.REGULAR_SIMPLE_DETAIL
+		   FROM REGULAR_PRODUCT_T A
+		   WHERE A.REGULAR_NO = #{regularNo};
+  	</select>
+  	
+  	<update id="editRegular" parameterType="regularProductDTO">
+	  UPDATE REGULAR_PRODUCT_T SET
+	    REGULAR_NAME = #{regularName},
+	    REGULAR_SELL_PRICE = #{regularSellPrice},
+	    REGULAR_ORIGIN_PRICE = #{regularOriginPrice},
+	    REGULAR_DISPLAY = #{regularDisplay},
+	    REGULAR_STOCK = #{regularStock},
+	    REGULAR_CATEGORY = #{regularCategory},
+	    REGULAR_STATE = #{regularState},
+	    REGULAR_SIMPLE_DETAIL = #{regularSimpleDetail}
+	  WHERE REGULAR_NO = #{regularNo}
+	</update>
+  	
+ 	<update id="editRegMainImg" parameterType="RegularMainImgDTO">
+	  UPDATE REGULAR_MAIN_IMG_T
+	  SET REG_MAIN_IMG_NAME = #{regMainImgName},
+	      REG_FILESYSTEMNAME = #{regFilesystemName}
+	  WHERE REGULAR_NO = #{regularNo}
+	</update>
+  
+ 	<update id="editRegImg" parameterType="RegularMainImgDTO">
+	  UPDATE REGULAR_DETAIL_IMG_T
+	  SET REG_DETAIL_IMG_NAME = #{regDetailImgName},
+	      REG_FILESYSTEMNAME = #{regFilesystemName}
+	  WHERE REGULAR_NO = #{regularNo}
+	</update>
+
+<!-- 첨부삭제 -->	
+   <delete id="deleteMainAttachFile" parameterType="int">
+    DELETE
+      FROM REG_MAIN_IMG_NAME
+    WHERE REGULAR_NO = #{regularNo}
+  </delete>
+  
+   <delete id="deleteDetailAttachFile" parameterType="int">
+    DELETE
+      FROM REG_DETAIL_IMG_NAME
+    WHERE REGULAR_NO = #{regularNo}
+  </delete>
+  
+<!-- 첨부파일명 조회 -->
+  
+    <select id="getAttachListInYesterday" resultType="RegularProductDTO">
+    SELECT REGULAR_NO, PATH, ORIGIN_NAME, FILESYSTEM_NAME, DOWNLOAD_COUNT, HAS_THUMBNAIL, UPLOAD_NO
+      FROM ATTACH
+     WHERE PATH LIKE CONCAT('%', DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 DAY), '%Y\\%m\\%d'))
+  </select>
+  
+  <select id="getRegCategory" parameterType="int" resultType="RegularCategoryDTO">
+    SELECT REGULAR_CATEGORY, REGULAR_CATEGORY_NAME
+      FROM REGULAR_CATEGORY_T
+    WHERE REGULAR_CATEGORY = #{regularCategory}
+  </select>
+  
+</mapper>

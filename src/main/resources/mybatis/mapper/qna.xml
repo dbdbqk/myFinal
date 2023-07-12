@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace는 @Mapper를 지정한다. -->
+<mapper namespace="com.gdu.pupo.mapper.QnaMapper">
+
+  <!-- JOIN 결과를 저장할 resultMap 만들기 -->
+  <resultMap type="QnaDTO" id="QnaMap">
+    <id column="Qna_NO" property="qnaNo" />
+    <result column="QNA_CATEGORY" property="qnaCategory" />
+    <result column="QNA_TITLE" property="qnaTitle" />
+    <result column="QNA_CONTENT" property="qnaContent" />
+    <result column="QNA_EMAIL" property="qnaEmail" />
+    <result column="QNA_CREATED_AT" property="qnaCreatedAt" />
+    <result column="QNA_MODIFIED_AT" property="qnaModifiedAt" />
+    <result column="QNA_EMAIL_ALARM_CHECK" property="qnaEmailAlarmCheck" />
+    <result column="QNA_HIT" property="qnaHit"/>
+    <result column="QNA_STATUS" property="qnaStatus"/>
+   <association javaType="UserDTO" property="userDTO">
+	  <id column="ID" property="id"/>
+	  <result column="SELLER_CHECK" property="sellerCheck"/>
+	</association>
+ </resultMap>
+ 
+ 
+ 
+  <!--
+    어떤 BLOG_SEQ 값이 사용되었는지 addBlog() 서비스에 알려줘야 하기 때문에
+    <selectKey>를 사용해서 addBlog() 서비스가 전달한 BlogDTO 객체의 blogNo 필드값에
+    BLOG_SEQ가 발생시킨 값을 저장한다.
+  -->
+ <!-- 1:1문의 게시글 작성 쿼리문 -->
+  <insert id="qnaAdd" useGeneratedKeys="true" keyProperty="qnaNo" parameterType="QnaDTO">
+    INSERT INTO QNA (
+        QNA_CATEGORY
+      , QNA_TITLE
+      , QNA_CONTENT   
+      , QNA_EMAIL
+      , QNA_CREATED_AT  
+      , QNA_MODIFIED_AT        
+      , QNA_HIT
+      ) VALUES (
+        #{qnaCategory}
+      , #{qnaTitle}
+      , #{qnaContent}
+      , #{qnaEmail}
+      , NOW()
+      , NOW()
+      , 0
+      )
+  </insert>
+  
+  <!-- attach첨부 -->
+  <insert id="qnaAddAttach" parameterType="QnaAttachDTO">
+    INSERT INTO QNA_ATTACH (
+      PATH
+    , ORIGIN_NAME
+    , FILESYSTEM_NAME
+    , DOWNLOAD_COUNT
+    , HAS_THUMBNAIL
+    , QNA_NO
+    ) VALUES (
+      #{path}
+    , #{originName}
+    , #{filesystemName}
+    , 0
+    , #{hasThumbnail}
+    , #{qnaNo}
+    )
+  </insert>
+ 
+ 
+ <!-- QNA 전체 목록 가져오기 -->
+<select id="getQnaList" parameterType="Map" resultMap="QnaMap">
+  SELECT QNA_NO, SELLER_CHECK, ID, QNA_CATEGORY, QNA_TITLE, QNA_CONTENT, QNA_EMAIL, QNA_CREATED_AT, QNA_MODIFIED_AT, QNA_EMAIL_ALARM_CHECK, QNA_HIT, QNA_STATUS
+    FROM QNA
+    <where>
+      <if test="kind != null and kind != ''">
+       QNA_CATEGORY = #{kind}
+      </if>
+      <if test="query != null and query != ''">
+       QNA_TITLE LIKE CONCAT('%', #{query}, '%') OR QNA_CONTENT LIKE CONCAT('%', #{query}, '%')
+      </if>
+    </where>
+   ORDER BY QNA_NO DESC
+    LIMIT #{begin}, #{recordPerPage}
+  </select>
+  
+  
+<!-- 전체 카운트 중 kind값과 query값 조건문 넣어준 쿼리문 -->
+  <select id="getQnaCount" parameterType="Map" resultType="int">
+    SELECT COUNT(*)
+      FROM QNA
+    <where>
+      <if test="kind != null and kind != ''">
+        QNA_CATEGORY = #{kind}
+      </if>
+      <if test="query != null and query != ''">
+        QNA_TITLE LIKE CONCAT('%', #{query}, '%') OR QNA_CONTENT LIKE CONCAT('%', #{query}, '%')
+      </if>
+    </where>
+  </select>
+  
+ 
+  <!-- 카테고리 게시글 수 카운트 용 -->
+<select id="getQnaCategoryCount" parameterType="string" resultType="int">
+  SELECT COUNT(QNA_NO)
+  FROM QNA
+  WHERE QNA_CATEGORY = #{kind}
+</select>
+
+<!-- 공지사항 조회수 -->
+  <update id="qnaHitUp" parameterType="int">
+    UPDATE QNA
+       SET QNA_HIT = QNA_HIT + 1
+     WHERE QNA_NO = #{qnaNo}
+  </update>
+  
+ 
+<!-- 첨부파일 다운로드 카운트 -->
+   <update id="qnaDownloadCount" parameterType="int">
+    UPDATE QNA_ATTACH
+       SET DOWNLOAD_COUNT = DOWNLOAD_COUNT + 1
+     WHERE ATTACH_NO = #{attachNo}
+  </update>
+
+<!--선택한 attachNo에 대한 공지 가져오기  -->
+  <select id="getQnaAttachByNo" parameterType="int" resultType="QnaAttachDTO">
+    SELECT ATTACH_NO, PATH, ORIGIN_NAME, FILESYSTEM_NAME, DOWNLOAD_COUNT, HAS_THUMBNAIL, QNA_NO
+      FROM QNA_ATTACH
+     WHERE ATTACH_NO = #{attachNo}
+  </select>
+
+    <!-- 선택한 qnaNo에 대한 공지 가져오기 -->
+  <select id="getQnaByNo" parameterType="int" resultType="QnaDTO">
+    SELECT QNA_NO, SELLER_CHECK, ID, QNA_CATEGORY, QNA_TITLE, QNA_CONTENT, QNA_EMAIL, QNA_CREATED_AT, QNA_MODIFIED_AT, QNA_EMAIL_ALARM_CHECK, QNA_HIT, QNA_STATUS
+      FROM QNA
+     WHERE QNA_NO = #{qnaNo}
+  </select> 
+    
+  <!-- 이전글 -->
+  <select id="getPrevQna" parameterType="int" resultType="QnaDTO">
+  <![CDATA[
+    SELECT QNA_NO, SELLER_CHECK, ID, QNA_CATEGORY, QNA_TITLE, QNA_CONTENT, QNA_EMAIL, QNA_CREATED_AT, QNA_MODIFIED_AT, QNA_EMAIL_ALARM_CHECK, QNA_HIT, QNA_STATUS
+      FROM QNA
+     WHERE QNA_NO = (SELECT MAX(QNA_NO)
+                           FROM QNA
+                          WHERE QNA_NO < ${qnaNo})
+  ]]>
+  </select>
+  
+  
+<!-- 다음글 -->
+  <select id="getNextQna" parameterType="int" resultType="QnaDTO">
+  <![CDATA[
+      SELECT QNA_NO, SELLER_CHECK, ID, QNA_CATEGORY, QNA_TITLE, QNA_CONTENT, QNA_EMAIL, QNA_CREATED_AT, QNA_MODIFIED_AT, QNA_EMAIL_ALARM_CHECK, QNA_HIT, QNA_STATUS
+        FROM QNA
+       WHERE QNA_NO = (SELECT MIN(QNA_NO)
+                            FROM QNA
+                           WHERE QNA_NO > ${qnaNo})
+  ]]>
+  </select>
+  
+  <!-- attachList가져오기  -->
+  <select id="getAttachList" parameterType="int" resultType="QnaAttachDTO">
+    SELECT ATTACH_NO, PATH, ORIGIN_NAME, FILESYSTEM_NAME, DOWNLOAD_COUNT, HAS_THUMBNAIL, QNA_NO
+      FROM QNA_ATTACH
+     WHERE QNA_NO = #{qnaNo}
+  </select>  
+  
+  
+  
+</mapper>

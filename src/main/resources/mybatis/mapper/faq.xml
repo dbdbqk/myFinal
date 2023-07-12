@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace는 @Mapper를 지정한다. -->
+<mapper namespace="com.gdu.pupo.mapper.FaqMapper">
+
+
+  <!-- JOIN 결과를 저장할 resultMap 만들기 -->
+  <resultMap type="FaqDTO" id="FaqMap">
+    <id column="FAQ_NO" property="faqNo" />
+    <result column="SELLER_CHECK" property="sellerCheck" />
+    <result column="ID" property="id" />
+    <result column="FAQ_CATEGORY" property="faqCategory" />
+    <result column="FAQ_TITLE" property="faqTitle" />
+    <result column="FAQ_CONTENT" property="faqContent" />
+    <result column="FAQ_CREATED_AT" property="faqCreatedAt" />
+    <result column="FAQ_MODIFIED_AT" property="faqModifiedAt" />
+    <result column="FAQ_HIT" property="faqHit" />
+ </resultMap>
+
+  <insert id="insertFaq" parameterType="FaqDTO">
+    INSERT INTO FAQ (
+      SELLER_CHECK
+    , ID
+    , FAQ_CATEGORY
+    , FAQ_TITLE
+    , FAQ_CONTENT
+    , FAQ_CREATED_AT
+    , FAQ_MODIFIED_AT
+    , FAQ_HIT
+    ) VALUES (
+      2
+    , 'admin'
+    , #{faqCategory}
+    , #{faqTitle}
+    , #{faqContent}
+    , NOW()
+    , NOW()
+    , #{faqHit}
+    )
+  </insert>
+
+  <select id="selectFaqByNo" parameterType="int" resultType="FaqDTO">
+    SELECT FAQ_NO, SELLER_CHECK, ID, FAQ_CATEGORY, FAQ_TITLE, FAQ_CONTENT, FAQ_CREATED_AT, FAQ_MODIFIED_AT, FAQ_HIT
+    FROM FAQ
+    WHERE FAQ_NO = #{faqNo}
+  </select>
+
+  <update id="faqHitUp" parameterType="int">
+    UPDATE FAQ
+    SET FAQ_HIT = FAQ_HIT + 1
+    WHERE FAQ_NO = #{faqNo}
+  </update>
+
+  <update id="updateFaq" parameterType="FaqDTO">
+    UPDATE FAQ
+    SET 
+      FAQ_CATEGORY = #{faqCategory}
+    , FAQ_TITLE = #{faqTitle}
+    , FAQ_CONTENT = #{faqContent}
+    , FAQ_CREATED_AT = NOW()
+    , FAQ_MODIFIED_AT = NOW()
+    WHERE FAQ_NO = #{faqNo}
+  </update>
+
+  <delete id="deleteFaq" parameterType="int">
+    DELETE
+      FROM FAQ
+     WHERE FAQ_NO = #{faqNo}
+  </delete>
+
+
+  <select id="getFaqCount" parameterType="Map" resultType="int">
+    SELECT COUNT(*)
+      FROM FAQ
+    <where>
+      <if test="kind != null and kind != ''">
+        FAQ_CATEGORY = #{kind}
+      </if>
+      <if test="query != null and query != ''">
+        FAQ_TITLE LIKE CONCAT('%', #{query}, '%') OR FAQ_CONTENT LIKE CONCAT('%', #{query}, '%')
+      </if>
+    </where>
+  </select>
+
+<select id="getFaqList" parameterType="Map" resultMap="FaqMap">
+  SELECT FAQ_NO, SELLER_CHECK, ID, FAQ_CATEGORY, FAQ_TITLE, FAQ_CONTENT, FAQ_CREATED_AT, FAQ_MODIFIED_AT, FAQ_HIT
+    FROM FAQ
+    <where>
+      <if test="kind != null and kind != ''">
+        FAQ_CATEGORY = #{kind}
+      </if>
+      <if test="query != null and query != ''">
+        FAQ_TITLE LIKE CONCAT('%', #{query}, '%') OR FAQ_CONTENT LIKE CONCAT('%', #{query}, '%')
+      </if>
+    </where>
+   ORDER BY FAQ_NO DESC
+    LIMIT #{begin}, #{recordPerPage}
+  </select>
+
+
+<select id="getFaqCategoryCount" parameterType="String" resultType="int">
+  SELECT COUNT(FAQ_NO)
+  FROM FAQ
+  WHERE FAQ_CATEGORY = #{kind}
+ </select>
+
+
+  
+
+</mapper>

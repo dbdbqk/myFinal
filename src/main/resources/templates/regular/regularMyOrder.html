@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+
+<!--/* /layout/header.html의 headFrag조각으로 head 태그를 바꾼다. */-->
+<head th:replace="~{/layout/header::headFrag('나의구독')}"></head>
+<style>
+table {
+    border-collapse: collapse;
+    width: 90%;
+    margin-left: 20px;
+        margin-top: 30px;
+  }
+table img {
+  height: 100px;
+}
+
+.imgTd {
+  width: 215px;
+}  
+
+/* 배치 */
+th, td {
+   padding: 8px;
+   text-align: left;
+   border-bottom: 1px solid #ddd;
+}
+
+th {
+   background-color: #8FA691; 
+   color: white;
+    height: 40px;
+   text-align: left;
+}
+
+
+
+</style>  
+  <body> 
+  <div th:replace="~{/layout/header::gnbFrag}"></div>
+    <section class="ftco-section ftco-cart">
+     <div class="container">
+      <div class="regi_main">
+        <div class="mainContent">
+              <div class="title">
+                  <h3>구독 이용 정보</h3>
+             </div>
+             
+              <form id="frm1" method="get" action="/regular/regularMyOrder.html">
+                <input type="hidden" name="regPayStatus" value="1">
+              </form>
+              <form id="frm2" method="get" action="/regular/regularMyOrder.html">
+                <input type="hidden" name="cancel" value="1">
+              </form>
+              <form id="frm3" method="get" action="/regular/regularMyOrder.html">
+                <input type="hidden" name="regPayStatus" value="2">
+              </form>
+              <form id="frm4" method="get" action="/regular/regularMyOrder.html">
+              </form>
+             <div>
+              <input type="button" value="구독조회" onclick="$('#frm1').submit()">
+              <input type="button" value="구독취소예약조회" onclick="$('#frm2').submit()">
+              <input type="button" value="구독취소조회" onclick="$('#frm3').submit()">
+              <input type="button" value="전체조회" onclick="$('#frm4').submit()">
+             </div>
+             <form id="regOrder" method="post">
+               <table aria-setsize="500px">
+                  <tbody id="myPurchaseTable">       
+                    <th:block th:each="list,vs:${orderList}">     
+                       <tr>
+                         <td colspan="5">
+                         <label>주문일시:&nbsp;</label><span th:text="${#dates.format(list.regPurchaseAt, 'yyyy년 MM월 dd일 E요일 HH:mm')}"></span>
+                         &emsp;
+                         <label>주문번호:&nbsp;</label><span th:id="'regPurchaseNo' + ${vs.index}" th:text="${list.regPurchaseNo}"></span></td> 
+                       </tr>
+                       <tr>                         
+                         <td class="imgTd" rowspan="3"><a th:href="@{/regular/regularPayDetail.html(regPurchaseNo=${list.regPurchaseNo})}"><img th:src="@{/regular/regularMainDisplay.do(regularNo=${list.regularProductDTO.regularNo})}"></a></td>
+                         <td><label>총 구독가격:&nbsp;</label><span th:text="${#numbers.formatInteger(list.regPurchaseLastPrice, 3, 'COMMA') } + 원"></span></td> 
+                         <td rowspan="3" style="text-align: center">배송요청일<br><span th:text="${list.regDeliveryDay}"></span><br></td>
+                         <th:block th:if="${list.regCancel == 1} and ${list.regPayStatus == 1}">
+                           <td rowspan="3" style="text-align: center"><label>구독취소예정일</label><br><span th:text="${#dates.format(oneMonth[vs.index], 'yyyy년 MM월 dd일 E요일')}"></span><br></td>
+                           <td rowspan="3" style="text-align: center"><label>구독 종료</label><br><br>
+                            <input type="button" th:onclick="|fnRegAgain($('#regPurchaseNo' + ${vs.index}).text())|" value="재구독">
+                            <input type="hidden" name="regPurchaseNo">
+                           </td>
+                         </th:block>  
+                         <th:block th:if="${list.regPayStatus == 1} and ${list.regCancel != 1}">
+                           <td rowspan="3" style="text-align: center"><label>다음결제일</label><br><span th:text="${#dates.format(oneMonth[vs.index], 'yyyy년 MM월 dd일 E요일')}"></span><br></td>
+                           <td rowspan="3" style="text-align: center"><label>구독중</label><br><br>
+                            <input type="button" th:onclick="|fnRegCancel($('#regPurchaseNo' + ${vs.index}).text())|" value="구독 취소">
+                            <input type="hidden" name="regPurchaseNo">
+                           </td>
+                         </th:block>  
+                         <th:block th:if="${list.regPayStatus == 2}">
+                           <td rowspan="3" style="text-align: center"><label></label><br><br></td>
+                           <td rowspan="3" style="text-align: center"><label>구독 종료</label><br><br>
+                           </td>
+                         </th:block> 
+                         <td rowspan="3"></td> 
+                         <td th:id="'reviewButton' + ${vs.index}" rowspan="3">리뷰작성</td>
+                       </tr>  
+                       <tr>
+                         <td><label>구독상품명:&nbsp;</label><span th:text="| ${list.regularProductDTO.regularName}|"></span></td>    
+                       </tr>
+                       <tr>
+                         <td><label>인원:&nbsp;</label><span th:text="| ${list.regProductCount} 명|"></span></td>
+                       </tr>    
+                    </th:block>      
+                  </tbody>
+               </table>
+             </form>
+          </div>
+      </div>
+     </div>
+    </section>
+    <div class="d-flex justify-content-center" th:utext="${pagination}"></div>
+   <div th:replace="~{/layout/footer::gnbFooter}"></div> 
+  </body>
+<script>
+  function checkReview(){
+    $('span[id^="regPurchaseNo"]').each(function(index){
+        var purchaseNo = $(this).text();
+        $.ajax({
+            url: '/regular/checkReview.do',  // 리뷰 존재 여부를 확인하는 서버 엔드포인트
+            type: 'post',
+            data: {
+                'regPurchaseNo': purchaseNo
+            },
+            dataType: 'json',
+            success: function(resData) {
+                if (resData.check) {  // 리뷰가 이미 존재하는 경우
+                    $('#reviewButton' + index).html(
+                        '<input type="button" value="리뷰 수정" onclick="fnUpdateReview(\'' + purchaseNo + '\')">' +
+                        '<input type="button" value="리뷰 삭제" onclick="fnDeleteReview(\'' + purchaseNo + '\')">'
+                    );
+                } else {  // 리뷰가 존재하지 않는 경우
+                    $('#reviewButton' + index).html(
+                        '<input type="button" value="리뷰 작성" onclick="fnWriteReview(\'' + purchaseNo + '\')">'
+                    );
+                }
+            },
+        });
+    });
+  }
+  
+  // 페이지 실행 시 ajax 실행
+  $(document).ready(function(){
+	  checkReview();
+  });
+  
+  
+  function fnRegCancel(purchaseNo) {
+    if(confirm("구독취소를 하시겠습니까?")){
+        $('#regOrder').find('input[name="regPurchaseNo"]').val(purchaseNo);
+        $('#regOrder').attr('action', '/regular/regCancel.do');
+        $('#regOrder').submit();
+      }
+  } 
+
+  function fnRegAgain(purchaseNo) {
+		if(confirm("다시 구독 하시겠습니까? 재구독시 기존 결제정보로 결제 됩니다.")){
+  	  $('#regOrder').find('input[name="regPurchaseNo"]').val(purchaseNo);
+  	  $('#regOrder').attr('action', '/regular/regAgain.do');
+  	  $('#regOrder').submit();
+		}
+	}
+  
+  function fnWriteReview(purchaseNo) {
+	  if(confirm('리뷰 작성을 하시겠습니까?')){
+		  // 팝업창 post 방식 준비
+		  var url = '/regular/regWriteReview.html';
+		  var windowPopup = "frm";
+		  var features = "scrollbars=yes,width=700,height=200,location=no, resizable=yes";
+		  var newWindow = window.open(url, windowPopup, features);
+	    // form 요소 생성
+	    var form = $("<form></form>");
+	    form.attr({
+	    	  id    : 'frm',
+	        method: 'post',
+	        action: url,
+	        target: windowPopup
+	    });
+
+	    // input 요소 생성
+	    var input = $("<input></input>");
+	    input.attr({
+	        type: 'hidden',
+	        name: 'regPurchaseNo',
+	        value: purchaseNo
+	    });
+
+	    // input 요소를 form에 추가
+	    form.append(input);
+	    
+	    // 팝업창 종료
+      window.onbeforeunload = function() {
+    	  if (newWindow.closed) {
+          window.opener.checkReview();
+    	  }
+      }     
+	    
+	    // form 요소를 body에 추가
+	    $('body').append(form);
+
+	    // form 제출
+	    form.submit();
+
+	    // form 요소를 body에서 제거
+	    form.remove();
+	  }
+	}
+  
+  function fnUpdateReview(purchaseNo) {
+    if(confirm('리뷰 작성를 수정 하시겠습니까?')){
+        // 팝업창 post 방식 준비
+        var url = '/regular/regModifyReview.html';
+        var windowPopup = "frm";
+        var features = "scrollbars=yes,width=1000,height=800,location=no, resizable=yes";
+        var newWindow = window.open(url, windowPopup, features);
+        // form 요소 생성
+        var form = $("<form></form>");
+        form.attr({
+            id    : 'frm',
+            method: 'post',
+            action: url,
+            target: windowPopup
+        });
+  
+        // input 요소 생성
+        var input = $("<input></input>");
+        input.attr({
+            type: 'hidden',
+            name: 'regPurchaseNo',
+            value: purchaseNo
+        });
+  
+        // input 요소를 form에 추가
+        form.append(input);
+        
+        // 팝업창 종료
+        window.onbeforeunload = function() {
+          if (newWindow.closed) {
+            window.opener.checkReview();
+          }
+        }     
+        
+        // form 요소를 body에 추가
+        $('body').append(form);
+  
+        // form 제출
+        form.submit();
+  
+        // form 요소를 body에서 제거
+        form.remove();
+    }
+  }
+  
+  function fnDeleteReview(purchaseNo) {
+	    if(confirm('리뷰를 삭제 하시겠습니까?')){
+	    	 $.ajax({
+	             url: '/regular/regDeleteReview.do',  
+	             type: 'post',
+	             data: {
+	                 'regPurchaseNo': purchaseNo
+	             },
+	             dataType: 'json',
+	             success: function(resData){
+	            	 if(resData.deleteResult == 1) {
+	            		 alert('리뷰를 삭제 했습니다.')
+	            		 checkReview();
+	            	 }
+	             }
+	    	 })
+	    }
+	  }
+  
+  
+  
+   
+</script>
+
+</html>

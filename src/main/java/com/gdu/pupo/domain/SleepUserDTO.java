@@ -1,0 +1,33 @@
+package com.gdu.pupo.domain;
+
+import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class SleepUserDTO {
+  private int userNo;
+  private String id;
+  private String pw;
+  private String name;
+  private String gender;
+  private String email;
+  private String mobile;
+  private String birthyear;
+  private String birthdate;
+  private String postcode;
+  private String roadAddress;
+  private String jibunAddress;
+  private String detailAddress;
+  private int agreecode;
+  private Date joinedAt;
+  private Date pwModifiedAt;
+  private Date sleptAt;
+  private int sellerCheck;
+  private int point;
+  private String grade;
+}

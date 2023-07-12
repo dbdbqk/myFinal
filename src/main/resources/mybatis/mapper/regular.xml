@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace는 @Mapper를 지정한다. -->
+<mapper namespace="com.gdu.pupo.mapper.RegularMapper">
+
+    <!-- 카테고리 추가 하기 -->
+    <insert id="addRegCategory" useGeneratedKeys="true" keyProperty="regularCategory" parameterType="RegularCategoryDTO">
+      INSERT INTO REGULAR_CATEGORY_T(REGULAR_CATEGORY_NAME) VALUES(#{regularCategoryName})
+    </insert>
+    <!-- 카테고리 리스트 가져오기 -->
+		<select id="getRegCategoryList" resultType="RegularCategoryDTO">
+		  SELECT REGULAR_CATEGORY, REGULAR_CATEGORY_NAME
+		  FROM REGULAR_CATEGORY_T
+		</select>
+		
+   <!-- 상품등록 -->
+   <insert id="addRegular" useGeneratedKeys="true" keyProperty="regularNo" parameterType="regularProductDTO">
+    INSERT INTO REGULAR_PRODUCT_T (
+        REGULAR_NAME
+      , REGULAR_SELL_PRICE
+      , REGULAR_ORIGIN_PRICE
+      , REGULAR_DISPLAY
+      , REGULAR_STOCK
+      , REGULAR_CATEGORY
+      , REGULAR_STATE
+      , REGULAR_SIMPLE_DETAIL
+    ) VALUES (
+      	#{regularName}
+      , #{regularSellPrice}
+      , #{regularOriginPrice}
+      , #{regularDisplay}
+      , #{regularStock}
+      , #{regularCategory}
+      , #{regularState}
+      , #{regularSimpleDetail}
+    )
+  </insert>
+  
+  <!-- 상품 상세 이미지 등록 -->
+  <insert id="addRegImg" useGeneratedKeys="true" keyProperty="regDetailImgNo" parameterType="RegularDetailImgDTO" >
+    INSERT INTO REGULAR_DETAIL_IMG_T (
+        REGULAR_NO
+      , REG_DETAIL_IMG_NAME
+      , REG_FILESYSTEMNAME
+    ) VALUES (
+        #{regularNo}
+      , #{regDetailImgName}
+      , #{regFilesystemName}
+    )
+  </insert>  
+  
+  <!-- 상품 메인 이미지 등록 -->
+  <insert id="addRegMainImg" useGeneratedKeys="true" keyProperty="regMainImgNo" parameterType="RegularMainImgDTO" >
+    INSERT INTO REGULAR_MAIN_IMG_T (
+        REGULAR_NO
+      , REG_MAIN_IMG_NAME
+      , REG_FILESYSTEMNAME
+    ) VALUES (
+        #{regularNo}
+      , #{regMainImgName}
+      , #{regFilesystemName}
+    )
+  </insert>  
+  
+  <!-- 상세 이미지 리스트 -->
+  <select id="getRegularImgList" resultType="RegularDetailImgDTO">
+    SELECT REGULAR_NO, REG_DETAIL_IMG_NAME
+     FROM REGULAR_DETAIL_IMG_T
+  </select>
+  
+  <!-- 메인 이미지 리스트 -->
+  <select id="getRegularMainImgList" resultType="RegularMainImgDTO">
+    SELECT REGULAR_NO, REG_MAIN_IMG_NAME
+     FROM REGULAR_MAIN_IMG_T
+  </select>
+  
+  <!-- 총 상품 갯수 -->
+  <select id="getRegularCount" resultType="int">
+    SELECT COUNT(*)
+    FROM REGULAR_PRODUCT_T
+  </select>
+  
+  <!-- 상품상세이미지 가져오기 -->
+  <select id="getRegularImgByNo" parameterType="int" resultType="RegularDetailImgDTO">
+    SELECT REGULAR_NO, REG_DETAIL_IMG_NAME, REG_FILESYSTEMNAME
+    FROM REGULAR_DETAIL_IMG_T
+    WHERE #{regularNo} = REGULAR_NO
+  </select>
+  <!-- 상품 메인 이미지 가져오기 -->
+  <select id="getRegularMainImgByNo" parameterType="int" resultType="RegularMainImgDTO">
+    SELECT REGULAR_NO, REG_MAIN_IMG_NAME, REG_FILESYSTEMNAME
+    FROM REGULAR_MAIN_IMG_T
+    WHERE #{regularNo} = REGULAR_NO
+  </select>
+    
+  <!-- 상세페이지 -->
+  <select id="getRegularByNo" parameterType="int" resultType="RegularProductDTO">
+    SELECT REGULAR_NO 
+		     , REGULAR_NAME
+		     , REGULAR_SELL_PRICE
+		     , REGULAR_ORIGIN_PRICE
+		     , REGULAR_DISPLAY
+		     , REGULAR_STOCK
+		     , REGULAR_CATEGORY
+		     , REGULAR_STATE
+		     , REGULAR_SIMPLE_DETAIL
+	   FROM REGULAR_PRODUCT_T
+	  WHERE REGULAR_NO = #{regularNo}
+  </select>
+  
+  <!-- 클릭 상품 리뷰 리스트 -->
+	<select id="getRegularReviewList" parameterType="map" resultType="RegularReviewDTO">
+		SELECT REG_REVIEW_DETAIL,
+		       REG_REVIEW_RATING,
+		       REG_REVIEW_CREATED_AT,
+		       REG_REVIEW_MODIFYED_AT
+		FROM REGULAR_REVIEW_T
+		WHERE REGULAR_NO = #{regularNo}
+		ORDER BY
+		  CASE
+		    WHEN REG_REVIEW_MODIFYED_AT IS NOT NULL THEN REG_REVIEW_MODIFYED_AT
+		    ELSE REG_REVIEW_CREATED_AT
+		  END DESC
+		LIMIT #{begin}, #{recordPerPage}
+	</select>
+	
+	<!-- 클릭한 상품 리뷰 카운트 -->
+  <select id="regReviewCount" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+      FROM REGULAR_REVIEW_T
+     WHERE REGULAR_NO = #{regularNo}
+  </select>
+	
+	
+  <!-- 서치 리스트  -->
+  <select id="getRegularList" parameterType="Map" resultType="RegularProductDTO">
+    SELECT REGULAR_NO, REGULAR_NAME, REGULAR_SELL_PRICE, REGULAR_ORIGIN_PRICE, REGULAR_DISPLAY, REGULAR_STOCK, REGULAR_CATEGORY, REGULAR_STATE, REGULAR_SIMPLE_DETAIL 
+    FROM REGULAR_PRODUCT_T
+    <where>
+	    REGULAR_DISPLAY = 1
+	    <if test="query != '' and regularCategory == 0 and regularState == 0">
+	      AND REGULAR_NAME LIKE CONCAT('%', #{query}, '%')
+	    </if>
+	    <if test="query == '' and regularCategory != 0 and regularState == 0">
+	      AND REGULAR_CATEGORY = #{regularCategory}
+	    </if>
+	    <if test="query == '' and regularState != 0 and regularCategory == 0">
+	      AND REGULAR_STATE = #{regularState}
+	    </if>
+    </where>    
+    ORDER BY REGULAR_NO DESC
+    LIMIT #{begin}, #{recordPerPage}
+  </select>
+  
+   <!-- 결제완료시 배송정보 저장 -->
+   <insert id="addRegShip" useGeneratedKeys="true" keyProperty="regShipNo" parameterType="RegularShipDTO">
+    INSERT INTO REGULAR_SHIP_T (
+       ID
+     , REG_RECEIVER_NAME
+     , REG_RECEIVER_MOBILE
+     , REG_SHIP_POSTCODE
+     , REG_SHIP_ROAD_ADDRESS
+     , REG_SHIP_JIBUN_ADDRESS
+     , REG_SHIP_DETAIL_ADDRESS
+     , REG_SHIP_EXTRA_ADDRESS
+     , REG_SHIP_MEMO   
+    ) VALUES (
+        #{id}
+      , #{regReceiverName}
+      , #{regReceiverMobile}
+      , #{regShipPostcode}
+      , #{regShipRoadAddress}
+      , #{regShipJibunAddress}
+      , #{regShipDetailAddress}
+      , #{regShipExtraAddress}
+      , #{regShipMemo}
+    )
+   </insert>
+  
+  
+  <!-- 주문완료 주문 저장 -->
+  <insert id="addRegPurchase" useGeneratedKeys="true" keyProperty="regPurchaseNo" parameterType="RegularPurchaseDTO">
+    INSERT INTO REGULAR_PURCHASE_T (
+        ID
+      , REG_SHIP_NO
+      , REGULAR_NO
+      , REG_CUSTOMER_UID
+      , REG_PURCHASE_PRICE
+      , REG_PURCHASE_LAST_PRICE
+      , REG_PURCHASE_AT
+      , REG_DELIVERY_STATUS
+      , REG_PRODUCT_COUNT
+      , REG_PG
+      , REG_LAST_PAY_AT
+      , REG_DELIVERY_DAY
+      , REG_PAY_STATUS
+      , REG_PAY_COUNT
+    ) VALUES (
+        #{userDTO.id}
+      , #{regularShipDTO.regShipNo}
+      , #{regularProductDTO.regularNo}
+      , #{regCustomerUid}
+      , #{regPurchasePrice}
+      , #{regPurchaseLastPrice}
+      , NOW()
+      , 1
+      , #{regProductCount}
+      , #{regPg}
+      , NOW()
+      , #{regDeliveryDay}
+      , 1
+      , 1
+      )
+  </insert>
+  <!-- 구매정보 -->
+    <resultMap type="RegularPurchaseDTO" id="RegularPayMap">
+	    <id column="REG_PURCHASE_NO" property="regPurchaseNo"/>
+	    <result column="REG_CUSTOMER_UID" property="regCustomerUid"/>
+	    <result column="REG_PURCHASE_PRICE" property="regPurchasePrice"/>
+	    <result column="REG_PURCHASE_LAST_PRICE" property="regPurchaseLastPrice"/>
+	    <result column="REG_PURCHASE_AT" property="regPurchaseAt"/>
+	    <result column="REG_DELIVERY_STATUS" property="regDeliveryStatus"/>
+	    <result column="REG_PRODUCT_COUNT" property="regProductCount"/>
+	    <result column="REG_PG" property="regPg"/>
+	    <result column="REG_LAST_PAY_AT" property="regLastPayAt"/>
+	    <result column="REG_DELIVERY_DAY" property="regDeliveryDay"/>
+	    <result column="REG_PAY_STATUS" property="regPayStatus"/>
+	    <result column="REG_PAY_COUNT" property="regPayCount"/>
+	    <result column="REG_CANCEL" property="regCancel"/>
+	    <association javaType="UserDTO" property="userDTO">
+	      <id column="ID" property="id"/>
+	      <result column="NAME" property="name"/>
+	      <result column="MOBILE" property="mobile"/>
+	    </association>
+	    <association javaType="RegularProductDTO" property="regularProductDTO">
+	      <id column="REGULAR_NO" property="regularNo"/>
+	      <result column="REGULAR_NAME" property="regularName"/>
+	      <result column="REGULAR_SIMPLE_DETAIL" property="regularSimpleDetail"/>
+	    </association>
+	    <association javaType="RegularShipDTO" property="regularShipDTO">
+	      <id column="REG_SHIP_NO" property="regShipNo"/>
+	      <result column="REG_RECEIVER_NAME" property="regReceiverName"/>
+	      <result column="REG_RECEIVER_MOBILE" property="regReceiverMobile"/>
+	      <result column="ID" property="id"/>
+	      <result column="REG_SHIP_POSTCODE" property="regShipPostcode"/>
+	      <result column="REG_SHIP_ROAD_ADDRESS" property="regShipRoadAddress"/>
+	      <result column="REG_SHIP_JIBUN_ADDRESS" property="regShipJibunAddress"/>
+	      <result column="REG_SHIP_DETAIL_ADDRESS" property="regShipDetailAddress"/>
+	      <result column="REG_SHIP_EXTRA_ADDRESS" property="regShipExtraAddress"/>
+	      <result column="REG_SHIP_MEMO" property="regShipMemo"/>
+	    </association>
+  </resultMap>
+  
+  
+  <!-- 주문 완료 정보 -->
+  <select id="getRegularPayDone" parameterType="int" resultMap="RegularPayMap">
+    SELECT  RP.REG_PURCHASE_NO,
+				    RP.REG_PURCHASE_PRICE,
+				    RP.REG_PURCHASE_LAST_PRICE,
+				    RP.REG_PURCHASE_AT,
+				    RP.REG_DELIVERY_STATUS,
+				    RP.REG_PRODUCT_COUNT,
+				    RP.REG_PG,
+				    RP.REG_LAST_PAY_AT,
+				    RP.REG_DELIVERY_DAY,
+				    RP.REG_PAY_STATUS,
+				    RP.REG_PAY_COUNT,
+				    RP.REG_CANCEL,
+				    U.ID,
+				    U.NAME,
+				    U.MOBILE,
+				    RP.REGULAR_NO,
+				    RPD.REGULAR_NAME,
+				    RPD.REGULAR_SIMPLE_DETAIL,
+				    RS.REG_SHIP_NO,
+				    RS.REG_RECEIVER_NAME,
+				    RS.REG_RECEIVER_MOBILE,
+				    RS.ID,
+				    RS.REG_SHIP_POSTCODE,
+				    RS.REG_SHIP_ROAD_ADDRESS,
+				    RS.REG_SHIP_JIBUN_ADDRESS,
+				    RS.REG_SHIP_DETAIL_ADDRESS,
+				    RS.REG_SHIP_EXTRA_ADDRESS,
+				    RS.REG_SHIP_MEMO
+      FROM  REGULAR_PURCHASE_T RP
+						INNER JOIN USER_T U ON RP.ID = U.ID
+						INNER JOIN REGULAR_PRODUCT_T RPD ON RP.REGULAR_NO = RPD.REGULAR_NO
+						INNER JOIN REGULAR_SHIP_T RS ON RP.REG_SHIP_NO = RS.REG_SHIP_NO
+		 WHERE	RP.REG_PURCHASE_NO = #{regPurchaseNo}		
+  </select>
+  
+  <!-- 주문정보조회 -->
+  <select id="getRegularPurchaseByNo" parameterType="int" resultType="RegularPurchaseDTO">
+    SELECT REG_PURCHASE_NO, ID, REG_SHIP_NO, REGULAR_NO, REG_CUSTOMER_UID, REG_PURCHASE_PRICE, REG_PURCHASE_LAST_PRICE, REG_PURCHASE_AT, REG_DELIVERY_STATUS, REG_PRODUCT_COUNT, REG_PG, REG_LAST_PAY_AT, REG_DELIVERY_DAY, REG_PAY_STATUS, REG_PAY_COUNT
+      FROM REGULAR_PURCHASE_T
+     WHERE REG_PURCHASE_NO = #{regPurchaseNo} 
+  </select>
+  
+  <!-- 구독 취소 안 한 사람만 자동 결제 -->
+  <select id="regularPayList" resultType="RegularPurchaseDTO">
+    SELECT REG_PURCHASE_NO, ID, REG_CUSTOMER_UID, REG_PURCHASE_LAST_PRICE, REG_LAST_PAY_AT, REG_PAY_STATUS
+      FROM REGULAR_PURCHASE_T
+     WHERE REG_PAY_STATUS = 1;
+  </select>
+  <!-- 자동결제 완료 후 마지막 결제일 저장 및 결제 횟수 1 증가 -->
+  <update id="regularPayUpdate" parameterType="int">
+    UPDATE REGULAR_PURCHASE_T
+       SET REG_LAST_PAY_AT = NOW(),
+           REG_PAY_COUNT = REG_PAY_COUNT + 1
+     WHERE REG_PURCHASE_NO = #{regPurchaseNo}
+  </update>
+  
+  <!-- 로그인 아이디 나의 구독 리스트 -->
+  <select id="getRegularMyOrder" parameterType="Map" resultMap="RegularPayMap">
+    SELECT  RP.REG_PURCHASE_NO,
+            RP.REG_PURCHASE_PRICE,
+            RP.REG_PURCHASE_LAST_PRICE,
+            RP.REG_PURCHASE_AT,
+            RP.REG_DELIVERY_STATUS,
+            RP.REG_PRODUCT_COUNT,
+            RP.REG_PG,
+            RP.REG_LAST_PAY_AT,
+            RP.REG_DELIVERY_DAY,
+            RP.REG_PAY_STATUS,
+            RP.REG_PAY_COUNT,
+            RP.REGULAR_NO,
+            RP.REG_CANCEL,
+            RPD.REGULAR_NAME,
+            RPD.REGULAR_SIMPLE_DETAIL,
+            RS.REG_SHIP_NO,
+            RS.REG_RECEIVER_NAME,
+            RS.REG_RECEIVER_MOBILE
+       FROM REGULAR_PURCHASE_T RP
+            INNER JOIN USER_T U ON RP.ID = U.ID
+            INNER JOIN REGULAR_PRODUCT_T RPD ON RP.REGULAR_NO = RPD.REGULAR_NO
+            INNER JOIN REGULAR_SHIP_T RS ON RP.REG_SHIP_NO = RS.REG_SHIP_NO
+          <where>
+            RP.ID = #{id} 
+	          <if test="regPayStatus != ''">
+	           AND REG_PAY_STATUS = #{regPayStatus}
+	          </if>
+	          <if test="cancel != null and cancel != ''">
+	           AND REG_CANCEL = #{cancel}
+	           AND REG_PAY_STATUS = 1
+	          </if>
+         </where>    
+      ORDER BY RP.REG_LAST_PAY_AT DESC
+      LIMIT #{begin}, #{recordPerPage}
+  </select>
+  <!-- 마이 구독 전체 갯수 -->
+	<select id="getRegularMyOrderCount" parameterType="String" resultType="int">
+	  SELECT COUNT(*)
+	  FROM REGULAR_PURCHASE_T
+	  WHERE ID = #{id}
+	</select>
+	
+	<!-- 구독취소예약 -->
+  <update id="updateRegCancel" parameterType="int">
+    UPDATE REGULAR_PURCHASE_T
+       SET REG_CANCEL = 1
+     WHERE REG_PURCHASE_NO = #{regPurchaseNo}
+  </update>
+  
+	<!-- 구독취소예약 -->
+  <update id="updateRegAgain" parameterType="int">
+    UPDATE REGULAR_PURCHASE_T
+       SET REG_CANCEL = NULL
+     WHERE REG_PURCHASE_NO = #{regPurchaseNo}
+  </update>
+  
+  <!-- 구독취소예약 리스트 불러오기 -->
+  <select id="regularCancelList" resultType="regularPurchaseDTO">
+    SELECT REG_PURCHASE_NO, ID, REG_LAST_PAY_AT, REG_PAY_STATUS, REG_CANCEL
+      FROM REGULAR_PURCHASE_T
+     WHERE REG_PAY_STATUS = 1 AND REG_CANCEL = 1
+  </select>
+  
+  <!-- 구독예약리스트 중 구독취소일 되면 자동 취소로 변경 -->
+  <update id="updateRegCancelDone" parameterType="int">
+    UPDATE REGULAR_PURCHASE_T
+       SET REG_PAY_STATUS = 2,
+           REG_LAST_PAY_AT = NOW()
+     WHERE REG_PURCHASE_NO = #{regPurchaseNo}
+  </update>
+  
+  <!-- 배송정보 변경 저장 -->
+   <update id="regSaveDelivery" parameterType="RegularShipDTO">
+    UPDATE REGULAR_SHIP_T 
+       SET REG_RECEIVER_NAME = #{regReceiverName}
+		     , REG_RECEIVER_MOBILE = #{regReceiverMobile}
+		     , REG_SHIP_POSTCODE = #{regShipPostcode}
+		     , REG_SHIP_ROAD_ADDRESS = #{regShipRoadAddress}
+		     , REG_SHIP_JIBUN_ADDRESS = #{regShipJibunAddress}
+		     , REG_SHIP_DETAIL_ADDRESS = #{regShipDetailAddress}
+		     , REG_SHIP_EXTRA_ADDRESS = #{regShipExtraAddress}
+     WHERE REG_SHIP_NO = #{regShipNo}
+   </update>
+  
+  <!-- 리뷰 작성 여부 확인 -->
+  <select id="regCheckReview" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+      FROM REGULAR_REVIEW_T
+     WHERE REG_PURCHASE_NO = #{regPurchaseNo}
+  </select>
+  
+  <!-- 리뷰 작성 저장 -->
+  <insert id="regWriteReview" useGeneratedKeys="true" keyProperty="regReviewNo" parameterType="RegularReviewDTO">
+    INSERT INTO REGULAR_REVIEW_T (REG_PURCHASE_NO, REGULAR_NO, REG_REVIEW_DETAIL, REG_REVIEW_RATING, REG_REVIEW_CREATED_AT)
+                      VALUES (#{regPurchaseNo}, (SELECT REGULAR_NO FROM REGULAR_PURCHASE_T WHERE REG_PURCHASE_NO = #{regPurchaseNo}), #{regReviewDetail}, #{regReviewRating}, NOW())
+  </insert>
+  
+  <!-- 리뷰수정 클릭 한 내용 가져오기 -->
+  <select id="getRegModifyReview" parameterType="int" resultType="RegularReviewDTO">
+    SELECT REG_REVIEW_NO, REG_REVIEW_DETAIL, REG_REVIEW_RATING
+      FROM REGULAR_REVIEW_T
+     WHERE REG_PURCHASE_NO = #{regPurchaseNo}
+  </select>
+ 
+ <!-- 리뷰수정저장하기 -->
+  <update id="updateRegModifyReview" parameterType="RegularReviewDTO">
+   UPDATE REGULAR_REVIEW_T 
+      SET REG_REVIEW_DETAIL = #{regReviewDetail}
+        , REG_REVIEW_MODIFYED_AT = NOW()
+        , REG_REVIEW_RATING = #{regReviewRating}
+    WHERE REG_REVIEW_NO = #{regReviewNo}
+  </update>  
+  
+  <!-- 리뷰삭제 -->
+  <delete id="regDeleteReview" parameterType="int">
+    DELETE
+      FROM REGULAR_REVIEW_T
+     WHERE REG_PURCHASE_NO = #{regPurchaseNo}
+  </delete>
+  
+  <!-- 리뷰평점구하기 -->
+  <select id="regAvgStar" parameterType="int" resultType="java.lang.Double">
+    SELECT AVG(REG_REVIEW_RATING) AS AVG_RATING
+      FROM REGULAR_REVIEW_T
+     WHERE REGULAR_NO = #{regularNo}
+  </select>
+  
+  <!-- 정기구독 전체 주문 갯수 -->
+  <select id="regOrderListCount" resultType="int">
+    SELECT COUNT(*)
+      FROM REGULAR_PURCHASE_T
+  </select>
+  
+  <!-- 정기구독 전체 주문 리스트 -->
+    <select id="getRegOrderList" resultMap="RegularPayMap">
+    SELECT  RP.REG_PURCHASE_NO,
+            RP.REG_PURCHASE_PRICE,
+            RP.REG_PURCHASE_LAST_PRICE,
+            RP.REG_PURCHASE_AT,
+            RP.REG_DELIVERY_STATUS,
+            RP.REG_PRODUCT_COUNT,
+            RP.REG_PG,
+            RP.REG_LAST_PAY_AT,
+            RP.REG_DELIVERY_DAY,
+            RP.REG_PAY_STATUS,
+            RP.REG_PAY_COUNT,
+            RP.REGULAR_NO,
+            RP.REG_CANCEL,
+            U.ID,
+            RPD.REGULAR_NAME,
+            RPD.REGULAR_SIMPLE_DETAIL,
+            RS.REG_SHIP_NO,
+            RS.REG_RECEIVER_NAME,
+            RS.REG_RECEIVER_MOBILE
+       FROM REGULAR_PURCHASE_T RP
+            INNER JOIN USER_T U ON RP.ID = U.ID
+            INNER JOIN REGULAR_PRODUCT_T RPD ON RP.REGULAR_NO = RPD.REGULAR_NO
+            INNER JOIN REGULAR_SHIP_T RS ON RP.REG_SHIP_NO = RS.REG_SHIP_NO
+      ORDER BY RP.REG_LAST_PAY_AT DESC
+      LIMIT #{begin}, #{recordPerPage}
+  </select>
+  
+</mapper>

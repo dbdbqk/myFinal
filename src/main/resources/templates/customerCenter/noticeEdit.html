@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<style>
+.fnRowButton {
+cursor: pointer;
+}
+</style>
+<!--/* /layout/header.html의 headFrag조각으로 head 태그를 바꾼다. */-->
+<head th:replace="~{/layout/header::headFrag('고객센터')}"></head>
+<div th:replace="~{/layout/header::gnbFrag}"></div>
+  
+<body class="goto-here">
+  <div class="ftco-section">
+    <div class="container">
+      <header> 
+        <div class="nav navbar">
+          <div class="row section-header-breadcrumb ftco-animate">
+            <div class="breadcrumb-item active"><a th:href="@{/}">HOME</a></div>
+            <div class="breadcrumb-item"><a th:href="@{/customerCenter/centerHome.html}">고객센터</a></div>
+            <div class="breadcrumb-item">All Posts</div>
+          </div>
+        </div>
+        <h1 class="ftco-animate text-center font-weight-bold pt-5">공지사항 수정-관리자 페이지</h1>
+      </header>
+      <section>
+        <div class="row aline-items-center">
+          <div class="col-lg-2 ftco-animate">
+            <div class=" ftco-animate mt-5">
+              <h3 class="heading blind">카테고리</h3>
+                <ul class="categories">
+                  <li><a th:href="@{/customerCenter/notice.html}">공지사항</a></li>
+                  <li><a th:href="@{/customerCenter/faq.html}">자주 묻는 질문</a></li>
+                  <li><a th:href="@{/customerCenter/qna.html}">1:1문의</a></li>
+                  <li><a th:href="@{/customerCenter/voc.html}">고객의 소리</a></li>
+                </ul>
+            </div>
+            <div class=" ftco-animate mt-5">
+              <h4 class="heading">고객센터</h4>
+              <p><strong>7777-7777</strong><br>평일, 토요일 7:00~18:00<br>공휴일 7시 ~ 13시 <br>(일요일 휴무)</p>
+            </div>
+          </div>
+          <div class="col-lg-10 ftco-animate">
+            <div class="row mt-4">
+              <div class="card-body" style="width: 100%">
+                <div class="comment-form-wrap pt-5 ">
+                  <form id="formAction" enctype="multipart/form-data" method="post" th:action="@{/customerCenter/noticeModify.do}" class="p-6 bg-white">
+                    <div class="form-group search-form">
+                      <label for="noticeTitle">제목</label>
+                      <input th:value="${noticeDetail.noticeTitle}" name="noticeTitle" class="form-control" id="noticeTitle" required="required">
+                    </div>
+                    <div class="form-group row mb-4">
+                      <label for="noticeCategory" class="col-form-label col-12 col-md-3 col-lg-3">카테고리</label>
+                      <div class="col-sm-12 col-md-12">
+                        <select name="noticeCategory" id="noticeCategory"  required="required" class="form-control selectric">
+                          <option th:value="${noticeDetail.noticeCategory}" th:text="${noticeDetail.noticeCategory}" style="display: none;" disabled selected hidden></option>
+                          <option value="공지">공지</option>
+                          <option value="긴급">긴급</option>
+                          <option value="당첨자발표">당첨자발표</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="noticeContent">내용</label>
+                      <textarea th:text="${noticeDetail.noticeContent}" id="noticeContent" name="noticeContent" cols="30" rows="10" class="form-control" required="required"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="fallback">
+                            <input type="file" id="files" name="files" multiple="multiple" onchange="fnFileCheck(this)">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row mb-4 mx-auto">
+                      <div class="ftco-animate">
+                        <input type="hidden" name="noticeNo" th:value="${noticeDetail.noticeNo}">
+                        <button class="btn btn-primary">수정완료</button>
+                        <input class="btn btn-primary"  type="button" value="목록" onclick="fnList()">
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div th:replace="~{/layout/footer::gnbFooter}"></div> 
+</body>
+<script th:inline="javascript">
+  function fnList() {
+      location.href = '/customerCenter/faq.html';
+    }
+
+  function fnFileCheck(vThis){
+
+    // 최대 크기 10MB
+    let maxSize = 1024 * 1024 * 10;
+    
+    // 첨부된 파일 목록
+    let files = vThis.files;
+    
+    // 첨부된 파일 순회(크기 체크 + 첨부된 파일명 표시)
+    $('#fileList').empty();
+    $.each(files, function(i, file){
+      
+      // 크기 체크
+      if(file.size > maxSize){
+        alert('각 첨부파일의 최대 크기는 10MB입니다.');
+        $(vThis).val('');  // 첨부된 파일을 모두 지운다.
+        $('#fileList').text('첨부 파일의 목록이 이 곳에 표시됩니다');
+        return;
+      } 
+    })
+    
+  }
+
+</script>
+</html>

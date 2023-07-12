@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="headFrag(title)">
+  <meta charset="UTF-8">
+  <title th:text="${title}"></title>
+   <!-- 부트스트랩테마 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- General CSS Files -->
+  <link rel="stylesheet" th:href="@{/assets/modules/bootstrap/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/assets/modules/fontawesome/css/all.min.css}">
+
+  <!-- CSS Libraries -->
+  <link rel="stylesheet" th:href="@{/assets/modules/jqvmap/dist/jqvmap.min.css}">
+  <link rel="stylesheet" th:href="@{/assets/modules/summernote/summernote-bs4.css}">
+  <link rel="stylesheet" th:href="@{/assets/modules/owlcarousel2/dist/assets/owl.carousel.min.css}">
+  <link rel="stylesheet" th:href="@{/assets/modules/owlcarousel2/dist/assets/owl.theme.default.min.css}">
+
+  <!-- Template CSS -->
+  <link rel="stylesheet" th:href="@{/assets/css/style.css}">
+  <link rel="stylesheet" th:href="@{/assets/css/components.css}">
+<!-- Start GA -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-94034622-3');
+</script>
+    
+</head>
+<body>
+  <div id="app">
+    <div class="main-wrapper main-wrapper-1">
+      <div class="navbar-bg"></div>
+      <nav class="navbar navbar-expand-lg main-navbar">
+        <form class="form-inline mr-auto">
+          <ul class="navbar-nav mr-3">
+            <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
+          </ul>
+        </form>
+        <ul class="navbar-nav navbar-right">
+          <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg beep"><i class="far fa-bell"></i></a>
+            <div class="dropdown-menu dropdown-list dropdown-menu-right">
+              <div class="dropdown-list-content dropdown-list-icons">
+                <a href="#" class="dropdown-item dropdown-item-unread">
+                </a>
+                <a href="#" class="dropdown-item">
+                  <div class="dropdown-item-icon bg-info text-white">
+                    <i class="far fa-user"></i>
+                  </div>
+                  <div class="dropdown-item-desc">
+                    문의 : <b>신규 문의</b>글이 있습니다.
+                    <div class="time">6시간 전</div>
+                  </div>
+                </a>
+                <a href="#" class="dropdown-item">
+                  <div class="dropdown-item-icon bg-info text-white">
+                    <i class="fas fa-bell"></i>
+                  </div>
+                  <div class="dropdown-item-desc">
+                    주문 : <b>신규 주문</b>이 있습니다.</b>
+                     <div class="time">1시간 전</div>
+                  </div>
+                </a>
+              </div>
+              <div class="dropdown-footer text-center">
+                <a href="#">View All <i class="fas fa-chevron-right"></i></a>
+              </div>
+            </div>
+          </li>
+          <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+            <div class="d-sm-none d-lg-inline-block">안녕하세요, 판매자님</div></a>
+            <div class="dropdown-menu dropdown-menu-right">
+              <div class="dropdown-title">Logged in 5 min ago</div>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item has-icon text-danger">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+      <div class="main-sidebar sidebar-style-2">
+        <aside id="sidebar-wrapper">
+          <div class="sidebar-brand">
+            <a href="index.html">판매자</a>
+          </div>
+          <div class="sidebar-brand sidebar-brand-sm">
+            <a href="index.html">판매자</a>
+          </div>
+          <ul class="sidebar-menu">
+            <li class="menu-header">주문</li>
+            <li class="dropdown">
+              <a href="#" class="nav-link has-dropdown"><i><ion-icon name="cart-outline"></ion-icon></i> <span>주문관리</span></a>
+              <ul class="dropdown-menu">
+                <li><a class="nav-link" href="errors-503.html">주문조회</a></li> 
+                <li><a class="nav-link" href="errors-403.html">배송조회</a></li> 
+              </ul>
+            </li>
+            <li class="menu-header">게시판</li>
+            <li class="dropdown">
+              <a href="#" class="nav-link has-dropdown"><i class="fas fa-columns"></i> <span>게시판관리</span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">1:1문의</a></li> 
+                <li><a href="#">자주묻는질문</a></li>  
+              </ul>
+            </li>
+          </ul>
+       </aside>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <section class="section">
+        </section>
+      </div>
+      <footer class="main-footer">
+        <div class="footer-left">
+          Copyright &copy; 2023 <div class="bullet"></div> Design By <a href="https://nauval.in/">Muhamad Nauval Azhar</a>
+        </div>
+        <div class="footer-right">
+          
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- General JS Scripts -->
+  <script th:src="@{/assets/modules/jquery.min.js}"></script>
+  <script th:src="@{/assets/modules/popper.js}"></script>
+  <script th:src="@{/assets/modules/tooltip.js}"></script>
+  <script th:src="@{/assets/modules/bootstrap/js/bootstrap.min.js}"></script>
+  <script th:src="@{/assets/modules/nicescroll/jquery.nicescroll.min.js}"></script>
+  <script th:src="@{/assets/modules/moment.min.js}"></script>
+  <script th:src="@{/assets/js/stisla.js}"></script>
+  
+  <!-- JS Libraies -->
+  <script th:src="@{/assets/modules/jquery.sparkline.min.js}"></script>
+  <script th:src="@{/assets/modules/chart.min.js}"></script>
+  <script th:src="@{/assets/modules/owlcarousel2/dist/owl.carousel.min.js}"></script>
+  <script th:src="@{/assets/modules/summernote/summernote-bs4.js}"></script>
+  <script th:src="@{/assets/modules/chocolat/dist/js/jquery.chocolat.min.js}"></script>
+
+  <!-- Page Specific JS File -->
+  <script th:src="@{/assets/js/page/index.js}"></script>
+  
+  <!-- Template JS File -->
+  <script th:src="@{/assets/js/scripts.js}"></script>
+  <script th:src="@{/assets/js/custom.js}"></script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<!--/* /layout/header.html의 headFrag조각으로 head 태그를 바꾼다. */-->
+<head th:replace="~{/layout/header::headFrag('fullPowerSalad')}"></head>
+
+<!--/* /layout/header.html의 gnbFrag조각으로 div 태그를 바꾼다. */-->
+<div th:replace="~{/layout/header::gnbFrag}"></div>
+<body>
+
+  <div class="mainContent" style="margin-top:50px; margin-left:200px;">
+    <div class="title">
+      <h3>상품 등록</h3>
+    </div>
+    <div class="regi_form">
+      <form method="post" th:action="@{/item/itemRegister.do}" enctype="multipart/form-data">
+        <table>
+        <tr>
+          <td><label for="itemName"><i class="fa fa-chevron-right"></i>상품명</label></td>
+          <td><input type="text" name="itemName" id="itemName" style="width: 350px;"></td>
+        </tr>
+
+        <tr>
+          <td>
+            <label for="description"><i class="fa fa-chevron-right"></i>상품 설명</label><br>
+          </td>
+          <td>
+            <textarea name="description" id="description" style="height: 200px; width:350px; resize:none;"></textarea>
+          </td>
+        </tr>
+
+    <tr>
+      <td><label for="categoryId"><i class="fa fa-chevron-right"></i>카테고리</label>
+      <td>
+        <select id="categoryId" name="categoryId" required>
+              <option th:value="0">카테고리</option>
+              <option th:value="1">샐러드</option>
+              <option th:value="2">샌드위치</option>
+              <option th:value="3">과일</option>
+              <option th:value="4">육류</option>
+            </select>
+          </td>
+    </tr>
+
+        <tr>
+          <td>
+            <label for="price"><i class="fa fa-chevron-right"></i>판매가격</label>
+          </td>
+          <td>
+            <input type="text" name="price" id="price"><br>
+          </td>
+        </tr>
+        
+        <tr>
+          <td>
+            <label for="stock"><i class="fa fa-chevron-right"></i>재고</label>
+          </td>
+          <td>
+            <input type="number" id="stock" name="stock"><br>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <label><i class="fa fa-chevron-right"></i>상품 메인 이미지</label>
+          </td>
+          <td>
+            <div class="select_img1"></div>
+            <input type="file" id="files" name="files" onchange="fnFileCheck(this)" accept="image/gif, image/jpeg, image/png, image/jpg"/>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <label><i class="fa fa-chevron-right"></i>상품 상세 설명 이미지</label>
+          </td>
+          <td>
+            <div class="select_img2"></div>
+            <input type='file' id="detailFiles" name="detailFiles" onchange="fnFileCheck(this)" accept="image/gif, image/jpeg, image/png, image/jpg"/>
+          </td>
+        </tr>
+      </table> 
+
+      <div class="regi_btn">
+        <button id="enrollBtn" class="btn enroll_btn">등록</button>
+        <button id="resetBtn" type="reset">취소</button>
+        <button id="backBtn" type="button" onclick="fnList()">돌아가기</button>
+      </div>
+    </form>
+  </div>
+  <div th:replace="~{/layout/footer::gnbFooter}"></div>
+</div>
+
+</body>
+
+<script th:inline="javascript">
+  function fnFileCheck(vThis){
+      let maxSize = 1024 * 1024* 10;
+      let files = vThis.files;
+      $('#fileList').empty();
+      $.each(files, function(i, file){
+        if(file.size > maxSize){
+          alert('최대 크기 10MB');
+          $(vThis).val('');
+          $('#fileList').text('첨부파일 목록');
+          return;
+        }
+        $('#fileList').append('<div>' + file.name + '</div>');
+      })
+      
+    }
+  
+  function fnList(){
+      location.href="/seller/sellerMain.html";
+  }
+  
+  
+</script>
+
+<style>
+  td{
+      border-bottom: 1px solid #ddd;
+      padding: 8px;
+      height: 30px;
+           }
+  li{
+      list-style: none;
+  }
+  a{
+  text-decoration: none;
+   color: #303030;
+   font-size: 17px;
+  }          
+  .regi_form{
+    margin-top:50px;
+    margin-left: 100px;
+  }
+  #uploadBtn,
+  #enrollBtn,
+  #resetBtn,
+  #backBtn,
+  #addCategoryBtn {
+      background-color: #8FA691 ; 
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      font-weight: bold;
+      margin: 20px 2px;
+    
+  }
+  #enrollBtn:focus,
+  #uploadBtn:focus,
+  #resetBtn:focus{
+   outline:none;
+   border: none;
+  }
+  .regi_btn{
+      float: center;
+      margin-right:330px;
+  }
+  .mainContent .title {
+  margin-left: 100px;
+  }
+  .mainContent h3{
+  font-weight:500;
+  font-size:24px;
+  margin-bottom:10px;
+  }
+  .mainContent p{
+      color: #b9b9b9;
+      margin-top:0;
+      
+  }
+</style>
+</html>

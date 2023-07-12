@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<!--/* /layout/header.html의 headFrag조각으로 head 태그를 바꾼다. */-->
+<head th:replace="~{/layout/header::headFrag('FullPowerSalad')}"></head>
+
+<!--/* /layout/header.html의 gnbFrag조각으로 div 태그를 바꾼다. */-->
+<div th:replace="~{/layout/header::gnbFrag}"></div>
+
+<body>
+
+<div class="hero-wrap hero-bread" style="background-image: url(&#39;images/bg_1.jpg&#39;);">
+      <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+          <div class="col-md-9 ftco-animate text-center fadeInUp ftco-animated">
+            <p class="breadcrumbs"><span class="mr-2"><a th:href="@{file:///C:/Users/pks75/Desktop/vegefoods-master/vegefoods-master/index.html}">Home</a></span> <span>Products</span></p>
+            <h1 class="mb-0 bread">Products</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <section class="ftco-section">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-10 mb-5 text-center">
+             <ul class="product-category">
+             <div th:each="categoryList : ${categoryList}"></div>
+            <li><a th:href="@{/item/storeList.html}">전체</a></li>
+            <li><a th:href="|@{/item/storeList.html(categoryId=1)}|">샐러드</a></li>
+            <li><a th:href="|@{/item/storeList.html(categoryId=2)}|">샌드위치</a></li>
+            <li><a th:href="|@{/item/storeList.html(categoryId=3)}|">과일</a></li>
+            <li><a th:href="|@{/item/storeList.html(categoryId=4)}|">육류</a></li>
+        </ul>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-lg-3 ftco-animate fadeInUp ftco-animated" th:each="itemList : ${itemList}">
+            <div class="product">
+              <a th:href="@{/item/storeDetail.html(itemId=${itemList.itemId})}" class="img-prod"><img id="imgSize" class="img-fluid" th:src="@{/item/itemImgDisplay.do(itemId=${itemList.itemId})}" alt="Colorlib Template"></a>
+              <div class="overlay"></div>
+              <div class="text py-3 pb-4 px-3 text-center">
+                <h3><a th:href="@{/item/storeDetail.html(itemId=${itemList.itemId})}" th:text="${itemList.itemName}"></a></h3>
+                <div class="d-flex">
+                  <div class="text py-3 pb-4 px-3 text-center">
+                    <p class="price"><span class="mr-2 price" th:text="${itemList.price}"></span><span class="price-sale"></span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        </div>
+        <div class="row mt-5">
+          <div class="col text-center">
+            <div class="block-27">
+              <ul>
+                <li><a th:href="@{file:///C:/Users/pks75/Desktop/vegefoods-master/vegefoods-master/shop.html#}">&lt;</a></li>
+                <li class="active"><span>1</span></li>
+                <li><a th:href="@{file:///C:/Users/pks75/Desktop/vegefoods-master/vegefoods-master/shop.html#}">2</a></li>
+                <li><a th:href="@{file:///C:/Users/pks75/Desktop/vegefoods-master/vegefoods-master/shop.html#}">3</a></li>
+                <li><a th:href="@{file:///C:/Users/pks75/Desktop/vegefoods-master/vegefoods-master/shop.html#}">4</a></li>
+                <li><a th:href="@{file:///C:/Users/pks75/Desktop/vegefoods-master/vegefoods-master/shop.html#}">5</a></li>
+                <li><a th:href="@{file:///C:/Users/pks75/Desktop/vegefoods-master/vegefoods-master/shop.html#}"></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  <div th:replace="~{/layout/footer::gnbFooter}"></div>
+</body>
+
+</html>

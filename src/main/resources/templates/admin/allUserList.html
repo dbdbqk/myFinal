@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/admin/adminMain::headFrag('관리자')}"></head>
+
+<div th:replace="~{/admin/adminMain::topFrag}"></div>
+
+<div th:replace="~{/admin/adminMain::sideFrag}"></div>
+
+<body>
+<div class="card-body">
+  <div id="app">
+    <div class="main-wrapper main-wrapper-1">
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="row mt-5">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h4>회원조회</h4>
+                <div class="card-header-form"></div>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>
+                          <div class="custom-checkbox custom-control" id="memberTable">
+                            <input type="checkbox" data-checkboxes="mygroup" data-checkbox-role="dad" class="custom-control-input" id="checkbox-all">
+                            <label for="checkbox-all" class="custom-control-label">&nbsp;</label>
+                          </div>
+                        </th>
+                        <th>회원번호</th>
+                        <th>구분</th>
+                        <th>등급</th>
+                        <th>ID</th>
+                        <th>이름</th>
+                        <th>성별</th>
+                        <th>휴대폰</th>
+                        <th>이메일</th>
+                        <th>주소</th><!-- /* roadAddress */ -->
+                        <th>상세주소</th><!-- /* detailAddress */ -->
+                        <th>가입일</th>
+                        <th>구독여부</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr th:each="user : ${user}">
+                        <td>
+                          <div class="custom-checkbox custom-control" id="memberTable">
+                            <input type="checkbox" data-checkboxes="mygroup" data-checkbox-role="dad" class="custom-control-input" id="checkbox-all">
+                            <label for="checkbox-all" class="custom-control-label">&nbsp;</label>
+                          </div>
+                        </td>
+                        <td th:text="${user.userDTO.userNo}"></td>
+                        <td>
+                          <span th:text="${user.userDTO.sellerCheck == 0 ? '사용자' : (user.userDTO.sellerCheck == 1 ? '판매자' : (user.userDTO.sellerCheck == 2 ? '관리자' : ''))}"></span>
+                        </td>
+                        <td th:text="${user.userDTO.grade}"></td>
+                        <td th:text="${user.userDTO.id}"></td>
+                        <td th:text="${user.userDTO.name}"></td>
+                        <td th:text="${user.userDTO.gender}"></td>
+                        <td th:text="${user.userDTO.mobile}"></td>
+                        <td th:text="${user.userDTO.email}"></td>
+                        <td th:text="${user.userDTO.roadAddress}"></td>
+                        <td th:text="${user.userDTO.detailAddress}"></td>
+                        <td th:text="${#dates.format(user.userDTO.joinedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td th:text="${user.regPayStatus == 0 ? '일반' : (user.regPayStatus == 1 ? '구독' : (user.regPayStatus == 2 ? '취소' : ''))}"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                      <div class="d-flex justify-content center" th:utext="${pagination}"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div th:replace="~{/admin/adminMain::footerFrag}"></div>
+</body>
+</html>

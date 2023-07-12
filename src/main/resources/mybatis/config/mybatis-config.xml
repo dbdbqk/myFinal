@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+    <!-- settings -->
+    <settings>
+      <setting name="mapUnderscoreToCamelCase" value="true" />
+    </settings>
+
+  <!-- typeAliases -->
+  <typeAliases>
+  
+    <!-- User -->     
+    <typeAlias alias="UserDTO"            type="com.gdu.pupo.domain.UserDTO" />
+    <typeAlias alias="SleepUserDTO"       type="com.gdu.pupo.domain.SleepUserDTO" />
+    <typeAlias alias="LeaveUserDTO"       type="com.gdu.pupo.domain.LeaveUserDTO" />
+    <typeAlias alias="UserAccessDTO"      type="com.gdu.pupo.domain.UserAccessDTO" />
+    
+    
+    <!-- jo / Faq / Qna / Notice /Voc -->
+    <typeAlias alias="FaqDTO"           type="com.gdu.pupo.domain.FaqDTO" />
+    <typeAlias alias="NoticeDTO"        type="com.gdu.pupo.domain.NoticeDTO" />
+    <typeAlias alias="QnaDTO"           type="com.gdu.pupo.domain.QnaDTO" />
+    <typeAlias alias="VocDTO"           type="com.gdu.pupo.domain.VocDTO" />
+    <typeAlias alias="NoticeAttachDTO"  type="com.gdu.pupo.domain.NoticeAttachDTO" />
+    <typeAlias alias="QnaAttachDTO"     type="com.gdu.pupo.domain.QnaAttachDTO" />
+    <typeAlias alias="VocAttachDTO"     type="com.gdu.pupo.domain.VocAttachDTO" />
+    
+    
+    <!-- yu / RegularProduct / Coupon -->
+    <typeAlias alias="CouponDTO"             type="com.gdu.pupo.domain.CouponDTO" />
+    <typeAlias alias="CouponUserDTO"         type="com.gdu.pupo.domain.CouponUserDTO" />
+    <typeAlias alias="RegularShipDTO"        type="com.gdu.pupo.domain.RegularShipDTO" />
+    <typeAlias alias="RegularDetailImgDTO"   type="com.gdu.pupo.domain.RegularDetailImgDTO" />
+    <typeAlias alias="RegularMainImgDTO"     type="com.gdu.pupo.domain.RegularMainImgDTO" />
+    <typeAlias alias="RegularProductDTO"     type="com.gdu.pupo.domain.RegularProductDTO" />
+    <typeAlias alias="RegularPurchaseDTO"    type="com.gdu.pupo.domain.RegularPurchaseDTO" />
+    <typeAlias alias="RegularReviewDTO"      type="com.gdu.pupo.domain.RegularReviewDTO" />
+    <typeAlias alias="UserGradeDTO"          type="com.gdu.pupo.domain.UserGradeDTO" />
+    <typeAlias alias="RegularCategoryDTO"    type="com.gdu.pupo.domain.RegularCategoryDTO" />
+
+    
+    <!-- park / Item / Cart -->
+    <typeAlias alias="ItemDTO"           type="com.gdu.pupo.domain.ItemDTO" />
+    <typeAlias alias="CategoryDTO"       type="com.gdu.pupo.domain.CategoryDTO" />
+    <typeAlias alias="ShipDTO"           type="com.gdu.pupo.domain.ShipDTO" />
+    <typeAlias alias="ReviewDTO"         type="com.gdu.pupo.domain.ReviewDTO" />
+    <typeAlias alias="CartDTO"           type="com.gdu.pupo.domain.CartDTO" />
+    <typeAlias alias="CartItemDTO"       type="com.gdu.pupo.domain.CartItemDTO" />
+    <typeAlias alias="OrderDTO"          type="com.gdu.pupo.domain.OrderDTO" />
+    <typeAlias alias="ItemImgDTO"        type="com.gdu.pupo.domain.ItemImgDTO" />
+    <typeAlias alias="ItemImgDetailDTO"  type="com.gdu.pupo.domain.ItemImgDetailDTO" />
+            
+  </typeAliases>
+
+</configuration>

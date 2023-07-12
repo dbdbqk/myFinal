@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/layout/header::headFrag('Welcome')}"></head>
+<script src="http://code.jquery.com/jquery-latest.js"></script> 
+<script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+
+<body>
+  <div th:replace="~{/layout/header::gnbFrag}"></div>
+  <div><a th:href="@{/item/itemRegister.html}">상품 등록</a></div>
+  <div><a th:href="@{/item/itemList.html}">상품 목록</a></div>
+  <div th:replace="~{/layout/footer::gnbFooter}"></div>
+</body>  
+
+<script th:inline="javascript">
+</script>
+</html>
+
+
+  

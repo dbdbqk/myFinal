@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "import.api.rest-api-key",
+    "type": "java.lang.String",
+    "description": "A description for 'import.api.rest-api-key'"
+  },
+  {
+    "name": "import.api.restApiSecret",
+    "type": "java.lang.String",
+    "description": "A description for 'import.api.restApiSecret'"
+  }
+]}
